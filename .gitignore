@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+*.swp
+*.orig
+*.rej
+*~
+pull-*/

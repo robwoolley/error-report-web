@@ -1,0 +1,58 @@
+Error reporting tool
+===================
+
+This application based on Django, allows sending, receiving and viewing errors that occur when building an image.
+
+
+Setup
+-----
+
+Requirements:
+
+* Django 1.4.1. The application was tested with Django 1.4.1 but it may work on a newer version.
+* Database server conigured and running. Django will create the database used by the application.
+* django-registration (0.8) module;
+* django-nvd3 module;
+
+Setup instructions:
+
+1. Create a database and in your Django project configure the settings.py file to access the database.
+2. In order to synchronize the database with the Django model, you must run the command: python manage.py syncdb.
+   Create an admin account in order to access the admin interface (http://127.0.0.1:8000/admin/).
+3. You can start the server by running: python manage.py runserver. Then visit http://127.0.0.1:8000/Errors/ with your browser.
+4. Create an image and if it fails, send the file to the server by running "send-error-report errors_fileName".
+5. You can modify the html templates from the templates directory.
+
+
+Usage
+-----
+
+In order to send the error to the server, all you have to do is to run "send-error-report file_name" ("file_name" is the file where the errors are stored).
+Then, you will receive a link to view your entry from the graphical interface. Also you can see statistical information based on all the errors from database.
+
+
+Maintenance
+-----------
+
+The code for this application is maintained by the Yocto Project.
+
+
+License
+-------
+
+This application is based upon the Django project template, whose files
+are covered by the BSD license and are copyright (c) Django Software
+Foundation and individual contributors.
+
+Bundled Twitter Bootstrap (including Glyphicons) is redistributed under
+the Apache License 2.0.
+
+Bundled jQuery is redistributed under the MIT license.
+
+Bundled d3.js is redistributed under the BSD License.
+
+Bundled nvd3.js is redistributed under the Apache License 2.0.
+
+All other content is copyright (C) 2013 Intel Corporation and licensed
+under the MIT license (unless otherwise noted) - see COPYING.MIT for
+details.

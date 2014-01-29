@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+	<body>
+		{% block content %}
+			<div class="row-fluid">
+				<div class="page-header">
+					<a class="btn pull-left" style="margin-top:7px;" href="{% url entry_args %}?page={{ page }}&query={{ query }}&items={{ items }}">
+						<i class="icon-arrow-left"></i>
+					</a>
+					{%if details %}
+						{% for detail in details %}
+							<h1 style="margin-left:60px;">{{detail.TASK}} {{detail.RECIPE}}-{{detail.RECIPE_VERSION}}</h1>
+				</div>
+				<div class="row span8">
+						<pre>{{detail.ERROR_DETAILS}}</pre>
+				</div>
+				<div class="row span3">
+					<div class="well" style="background-color : transparent;">
+						<h2>Error details</h2>
+						<dl class="dl-vertical">
+							<dt>Task:</dt>
+							<dd>{{ detail.TASK }}</dd>
+							<dt>Recipe:</dt>
+							<dd>{{detail.RECIPE }} </dd>
+							<dt>Machine:</dt>
+							<dd>{{ detail.BUILD.MACHINE }}</dd>
+							<dt>Distro:</dt>
+							<dd>{{detail.BUILD.DISTRO}}</dd>
+							<dt>Build system:</dt>
+							<dd>{{ detail.BUILD.BUILD_SYS }}</dd>
+							<dt>Target system:</dt>
+							<dd>{{ detail.BUILD.TARGET_SYS }}</dd>
+							<dt>Host distro:</dt>
+							<dd>{{ detail.BUILD.NATIVELSBSTRING }}</dd>
+							<dt>Branch:</dt>
+							<dd>{{ detail.BUILD.BRANCH }}</dd>
+							<dt>Commit:</dt>
+							<dd class = "commit">{{ detail.BUILD.COMMIT }}</dd>
+							<dt>Submitter:</dt>
+							<dd>{{ detail.BUILD.NAME }}</dd>
+						</dl>
+						{% ifnotequal detail.BUILD.EMAIL "" %}
+							{% if "@" in detail.BUILD.EMAIL %}
+								<a class="btn btn-large btn-primary" href="mailto:{{detail.BUILD.EMAIL}}">Email submitter</a>
+							{% endif %}
+						{% endifnotequal %}
+				{% endfor %}
+				{% endif %}
+				</div>
+				</div>
+			</div>
+			
+			<script>
+				$(document).ready(function() {
+					$('.commit > div').popover({placement:'left'})
+				});
+		    </script>
+        {% endblock %}
+	</body>
+</html>

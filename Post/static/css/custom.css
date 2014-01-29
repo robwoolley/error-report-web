@@ -1,0 +1,44 @@
+/* error-reporting-tool
+
+ Copyright (C) 2013 Intel Corporation
+
+ Licensed under the MIT license, see COPYING.MIT for details
+*/
+
+body {
+	padding:50px;
+}
+.logo img {
+    height: 25px;
+    width: auto !important;
+    margin-left: 1em;
+}
+.logo {
+    padding-top: 4px;
+    padding-bottom: 0px;
+}
+
+.btn .caret {
+	 margin-left:5px;
+}
+
+td a {
+	color:#333333;
+
+
+td a:hover {
+	color:#666666;
+	text-decoration:underline;
+}
+
+td a:visited {
+	color:#333333;
+}
+
+.popover {
+	max-width:400px;
+}
+
+.commit {
+	word-break:break-all;
+}
