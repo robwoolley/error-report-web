@@ -132,7 +132,7 @@ def chart(request, template_name, key):
         'x': xdata,
         'y1': ydata, 'extra1': extra_serie,}
 
-    charttype = "multiBarHorizontalChart"
+    charttype = "discreteBarChart"
     data = {
         'charttype': charttype,
         'chartdata': chartdata}

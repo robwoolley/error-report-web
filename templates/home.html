@@ -158,8 +158,8 @@
 						var draw = current_part.substr(i, j)
 						draw=draw.replace('<div id="m"', '<div id="' + div + '"')
 						draw=draw.replace("('#m svg')", "('#" + div + " svg')")
-						draw = draw.replace(".tickFormat(d3.format(',.2f'));", ".tickFormat(function(d){ if (d.length <= 7) return String(d); else return String(d.substring(0,6) + '...'); });")
-						draw = draw.replace("format(',.2f'));", "format('%'));")
+						draw = draw.replace("chart.xAxis", "chart.xAxis.tickFormat(function(d){ if (d.length <= 9) return String(d); else return String(d.substring(0,8) + '...'); });")
+						draw = draw.replace("chart.yAxis", "chart.yAxis.tickFormat(d3.format('%'));")
 						draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
 						draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
 						return draw;
