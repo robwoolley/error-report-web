@@ -25,6 +25,7 @@ class Info:
             if index != -1:
                 category = Build.objects.values()[i].keys().__getitem__(index)
                 return category
+
         for i in range(0, BuildFailure.objects.values().__len__()):
             index = -1
             values = BuildFailure.objects.values()[i].values()
@@ -39,19 +40,23 @@ class Info:
     def getSearchResult(self, string):
         results = []
         category = ""
-        if string == "all":
-            results.append(BuildFailure.objects.all())
-            return results
+
         special_characters = ['.', '-', '&', '?']
         search_list = string.split()
+
         for i in range(len(search_list)):
             string = search_list[i]
-            for c in special_characters:
-                if c in string and len(search_list) == 1:
-                    if i == len(search_list) - 1:
-                        return results
-                    i = i+1
-                    string = search_list[i]
+            if string in special_characters:
+                try:
+                    string = search_list[i+1]
+                    i = i + 1
+                except:
+                    return results
+
+            if string == "all":
+                results.append(BuildFailure.objects.all())
+                return results
+
             try:
                 build_id = int(string)
             except ValueError:
@@ -62,6 +67,7 @@ class Info:
                     results.append(self.getBfByID(build))
                 except:
                     pass
+
             if category == "MACHINE":
                 build = Build.objects.filter(MACHINE__icontains = string)
                 results.append(self.getBuildFailures(build))

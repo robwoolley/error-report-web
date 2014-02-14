@@ -4,15 +4,6 @@
 {% load nvd3_tags %}
 <html>
 	<body>
-		{% block content_header%}
-		{% if not user.is_authenticated %}
-			<ul class="nav pull-right">
-				<li>
-					<a href="{% url auth_login %}">{% trans "log in" %}</a>
-				</li>
-			</ul>
-		{% endif %}
-		{% endblock %}
 		{% block content%}
 		<div class="row-fluid">
 			<div class="page-header">
@@ -161,7 +152,9 @@
 						draw = draw.replace("chart.xAxis", "chart.xAxis.tickFormat(function(d){ if (d.length <= 9) return String(d); else return String(d.substring(0,8) + '...'); });")
 						draw = draw.replace("chart.yAxis", "chart.yAxis.tickFormat(d3.format('%'));")
 						draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
-						draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
+						draw = draw.replace("'<center><b>'+key+'</b></center>' + y + ' at '", "parseInt(graph.point.y*100)+'% '")
+						draw = draw.replace("return tooltip_str;", "d3.selectAll('.discreteBar').on('click', function(){ if(String(graph.point.x) != 'others')  window.location.href='{% url entry_args %}?items=10&page=1&query='+String(graph.point.x) }); \n return tooltip_str;\n")
+						draw = draw.replace("return chart;", "nv.utils.windowResize(chart.update); \n return chart;\n")
 						return draw;
 					}
 

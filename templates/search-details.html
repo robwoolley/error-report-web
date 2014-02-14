@@ -16,9 +16,9 @@
 					<table class="table table-bordered table-hover">
 						<thead>
 							<tr>
-								<th>Task</th>
 								<th>Recipe</th>
 								<th>Recipe version</th>
+								<th>Task</th>
 								<th>Machine</th>
 								<th>Distro</th>
 								<th>Build system</th>
@@ -31,9 +31,9 @@
 						<tbody>
 							{%for detail in details %}
 								<tr>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
+									<td><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a></td>

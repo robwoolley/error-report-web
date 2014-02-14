@@ -12,13 +12,13 @@
 					</a>
 					{%if details %}
 						{% for detail in details %}
-							<h1 style="margin-left:60px;">{{detail.TASK}} {{detail.RECIPE}}-{{detail.RECIPE_VERSION}}</h1>
+							<h1 style="margin-left:60px;">{{detail.RECIPE}}-{{detail.RECIPE_VERSION}} {{detail.TASK}} </h1>
 				</div>
 				<div class="row span8">
 						<pre>{{detail.ERROR_DETAILS}}</pre>
 				</div>
 				<div class="row span3">
-					<div class="well" style="background-color : transparent;">
+					<div class="well">
 						<h2>Error details</h2>
 						<dl class="dl-vertical">
 							<dt>Task:</dt>

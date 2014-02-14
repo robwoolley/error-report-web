@@ -24,7 +24,7 @@ body {
 
 td a {
 	color:#333333;
-
+}
 
 td a:hover {
 	color:#666666;
@@ -40,5 +40,14 @@ td a:visited {
 }
 
 .commit {
-	word-break:break-all;
+	word-break: break-all;
+}
+
+.well {
+	background-color: transparent;
+}
+
+.errorlist {
+	list-style-type: none;
+	margin-left: 0px;
 }
