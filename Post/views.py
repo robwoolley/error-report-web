@@ -60,8 +60,7 @@ def search(request, template_name, items = None, page = None, query = None):
          items = request.GET.get('items', '')
     if query == "" or query.isspace() or query == "all":
         query = "all"
-    nested_list = Info().getSearchResult(query)
-    elems = flatten(nested_list)
+    elems = Info().getSearchResult(query)
     no = len(elems)
     if no == 0:
         return render_to_response(template_name, {"result" :"not found"}, RequestContext(request))
@@ -138,12 +137,3 @@ def chart(request, template_name, key):
         'chartdata': chartdata}
 
     return render_to_response(template_name, data, context_instance=RequestContext(request))
-
-def flatten(nested_list):
-    res =  []
-    for e in nested_list:
-        if hasattr(e, "__iter__") and not isinstance(e, basestring):
-            res.extend(flatten(e))
-        else:
-            res.append(e)
-    return res

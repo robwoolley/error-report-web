@@ -51,11 +51,11 @@ class Info:
                     string = search_list[i+1]
                     i = i + 1
                 except:
-                    return results
+                    return self.flatten(results)
 
             if string == "all":
                 results.append(BuildFailure.objects.all())
-                return results
+                return self.flatten(results)
 
             try:
                 build_id = int(string)
@@ -104,7 +104,7 @@ class Info:
             elif category == "TASK":
                 buildFs = BuildFailure.objects.filter(TASK__icontains = string)
                 results.append(buildFs)
-        return results
+        return self.flatten(results)
 
     def getBuildFailures(self, results):
         bfs=[]
@@ -120,3 +120,13 @@ class Info:
 
     def getBFDetails(self, idbf):
         return BuildFailure.objects.filter(id=idbf)
+
+    def flatten(self, nested_list):
+        res =  []
+        for e in nested_list:
+            if hasattr(e, "__iter__") and not isinstance(e, basestring):
+                res.extend(self.flatten(e))
+            else:
+                res.append(e)
+        return list(set(res))
+
