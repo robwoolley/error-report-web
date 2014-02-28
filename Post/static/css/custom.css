@@ -51,3 +51,7 @@ td a:visited {
 	list-style-type: none;
 	margin-left: 0px;
 }
+
+.no-results {
+	margin: 10px 0 0;
+}

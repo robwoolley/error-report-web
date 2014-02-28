@@ -58,12 +58,12 @@ def search(request, template_name, items = None, page = None, query = None):
          page = request.GET.get('page', '')
          query = request.GET.get('query', '')
          items = request.GET.get('items', '')
-    if query == "" or query.isspace() or query == "all":
+    if query == "" or query.isspace():
         query = "all"
-    elems = Info().getSearchResult(query)
+    elems = Info().getSearchResult(query.strip())
     no = len(elems)
     if no == 0:
-        return render_to_response(template_name, {"result" :"not found"}, RequestContext(request))
+        return render_to_response("error-page.html", {"query" : query}, RequestContext(request))
     paginator = Paginator(elems, items)
     try:
         c = paginator.page(page)

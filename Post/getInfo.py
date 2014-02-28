@@ -46,7 +46,7 @@ class Info:
 
         for i in range(len(search_list)):
             string = search_list[i]
-            if string in special_characters:
+            while string in special_characters:
                 try:
                     string = search_list[i+1]
                     i = i + 1
