@@ -13,7 +13,7 @@
 			<div class="alert">
 				<form class="no-results" action="{% url entry_args %}" method="GET">
 					<div class="input-append">
-						<input class="input-xxlarge" type="text" name="query" placeholder="Search all errors">
+						<input class="input-xxlarge" type="text" name="query" value="{{ query }}">
 						<input type="text" name="items" value=10 style="display: none;">
 						<input type="text" name="page" value=1 style="display: none;">
 						<button class="btn" type="submit" value = "Search">Search</button>
