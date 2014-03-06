@@ -12,7 +12,8 @@ Requirements:
 * Django 1.4.1. The application was tested with Django 1.4.1 but it may work on a newer version.
 * Database server conigured and running. Django will create the database used by the application.
 * django-registration (0.8) module;
-* django-nvd3 module;
+* django-nvd3 0.1.11;
+* python-nvd3 0.6.0;
 
 Setup instructions:
 
