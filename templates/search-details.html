@@ -14,6 +14,15 @@
 			else {
 				$('.' + clname ).hide( 100 );
 			}
+			// save cookie for all checkboxes$
+			save = '';
+			$( '.chbxtoggle' ).each(function( ) {
+				if ( $( this ).attr( 'id' ) != undefined ) {
+					save += ';' + $( this ).attr( 'id' ) +':'+ $( this ).is( ':checked' )
+				}
+			});
+			$.cookie( '_displaycols_{{objectname}}', save );
+			save = '';
 		}
 		</script>
 
@@ -163,6 +172,25 @@
 				<script>
 				$(document).ready(function() {
 					$('.commit > div').popover({placement:'left'})
+
+					// we load cookies for the column display$
+					save = $.cookie('_displaycols_{{objectname}}');
+					if (save != undefined) {
+						setting = save.split(';');
+						for ( i = 0; i < setting.length; i++) {
+							if (setting[i].length > 0) {
+								splitlist = setting[i].split(':');
+								id = splitlist[0], v = splitlist[1];
+								if (v == 'true') {
+									$('.chbxtoggle#'+id).prop('checked', true);
+								}
+								else {
+									$('.chbxtoggle#'+id).prop('checked', false);
+								}
+							}
+						}
+					}
+					
 					$('.chbxtoggle').each(function () {
 						showhideTableColumn($(this).attr('id'), $(this).is(':checked'))
 					});
