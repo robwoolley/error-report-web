@@ -50,6 +50,8 @@ the Apache License 2.0.
 
 Bundled jQuery is redistributed under the MIT license.
 
+Bundled jquery.cookie.js is redistributed under the MIT license.
+
 Bundled d3.js is redistributed under the BSD License.
 
 Bundled nvd3.js is redistributed under the Apache License 2.0.
