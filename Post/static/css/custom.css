@@ -55,3 +55,11 @@ td a:visited {
 .no-results {
 	margin: 10px 0 0;
 }
+
+.navbar-inner form {
+	margin: 5px 0 0;
+}
+
+.dropdown-menu {
+	padding: 10px;
+}
