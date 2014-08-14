@@ -27,6 +27,7 @@
 								<th>Host distro</th>
 								<th>Branch</th>
 								<th>Commit</th>
+								<th>Submitter</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -49,6 +50,7 @@
 												{{ detail.BUILD.COMMIT|truncatechars:10}}
 											</div>
 						            </td>
+									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a></td>
 								</tr>
 							 {%endfor%}
 						</tbody>
