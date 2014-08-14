@@ -84,7 +84,31 @@ def search(request, template_name, items = None, page = None, query = None):
     else:
         index = paginator.page_range.index(c.number) - 2
         end = index + 5
-    return render_to_response(template_name, {'details':c, 'd' : query, "no" : no, 'list' : paginator.page_range[index:end], 'items' : items}, RequestContext(request))
+
+    context = {
+        'details':c,
+        'd' : query,
+        "no" : no,
+        'list' : paginator.page_range[index:end],
+        'items' : items,
+        'objectname' : 'errors',
+        'tablecols' : [
+        {'name': 'Submitted on', 'clclass': 'submitted_on'},
+        {'name': 'Recipe'},
+        {'name': 'Recipe version', 'clclass': 'recipe_version'},
+        {'name': 'Task'},
+        {'name': 'Machine'},
+        {'name': 'Distro'},
+        {'name': 'Build system', 'clclass': 'build_sys', 'hidden': 1},
+        {'name': 'Target system', 'clclass': 'target_sys', 'hidden': 1},
+        {'name': 'Host distro', 'clclass': 'host_distro'},
+        {'name': 'Branch', 'clclass': 'branch'},
+        {'name': 'Commit', 'clclass': 'commit'},
+        {'name': 'Submitter', 'clclass': 'submitter','hidden': 1}],
+    }
+
+    return render_to_response(template_name, context, RequestContext(request))
+
 
 def searchDetails(request, template_name, pk, page = None, query = None, items = None):
     results=''

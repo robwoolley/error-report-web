@@ -1,58 +1,88 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load projecttags %}
 <!DOCTYPE html>
 <html>
 	<body>
-
 		{% block content %}
+		<script>$
+		function showhideTableColumn( clname, sh) {
+			if ( sh ) {
+				$('.' + clname ).show( 100 );
+			}
+			else {
+				$('.' + clname ).hide( 100 );
+			}
+		}
+		</script>
+
 			<div class="row-fluid">
 				<div class="page-header">
 					{% if no %}
 						<h1>{{ no }} errors found for "{{ d }}"</h1>
 					{% endif %}
 				</div>
-				{% if details %}
+				<div class="navbar">
+					<div class="navbar-inner">
+						{% if tablecols %}
+							<div class="btn-group pull-right">
+								<button class="btn dropdown-toggle" data-toggle="dropdown">Edit columns
+									<span class="caret"></span>
+								</button>
+								<ul id='editcol' class="dropdown-menu">
+									{% for i in tablecols|sortcols %}
+									<li>
+									<label {% if not i.clclass %} class="checkbox muted" {%else%} class="checkbox" {%endif%}>
+										<input type="checkbox" class="chbxtoggle"
+										{% if i.clclass %}
+											id="{{i.clclass}}"
+											value="ct{{i.name}}"
+											{% if not i.hidden %}
+												checked="checked"
+											{%endif%}
+											onclick="showhideTableColumn($(this).attr('id'), $(this).is(':checked'))"
+										{%else%}
+											checked disabled
+										{% endif %}/>   {{i.name}}
+									</label>
+									</li>
+									{% endfor %}
+								</ul>
+						{% endif %}
+					</div>
+				</div> <!-- navbar-inner -->
+			</div>
+			{% if details %}
 					<table class="table table-bordered table-hover">
 						<thead>
 							<tr>
-								<th>Submitted on</th>
-								<th>Recipe</th>
-								<th>Recipe version</th>
-								<th>Task</th>
-								<th>Machine</th>
-								<th>Distro</th>
-								<th>Build system</th>
-								<th>Target system</th>
-								<th>Host distro</th>
-								<th>Branch</th>
-								<th>Commit</th>
-								<th>Submitter</th>
+								{% for i in tablecols %} <th class="{{i.dclass}} {{i.clclass}}"> {{i.name}} </th> {%endfor%}
 							</tr>
 						</thead>
 						<tbody>
 							{%for detail in details %}
-								<tr>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a></td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BRANCH }} </a></td>
+								<tr class="data">
+									<td class="submitted_on"> <a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
+									<td class="recipe"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a></td>
+									<td class="recipe_version"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
+									<td class="task"><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>
+									<td class="machine"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a></td>
+									<td class="distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a></td>
+									<td class="build_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a></td>
+									<td class="target_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a></td>
+									<td class="host_distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a></td>
+									<td class="branch"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BRANCH }} </a></td>
 									<td class="commit">
 										{% autoescape off %}
 											<div class="btn" rel="popover" data-content= {{ detail.BUILD.COMMIT|escape}} title="">
 												{% endautoescape %}
-												{{ detail.BUILD.COMMIT|truncatechars:10}}
+											{{ detail.BUILD.COMMIT|truncatechars:10}}
 											</div>
-						            </td>
-									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a></td>
+									</td>
+									<td class="submitter"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a></td>
 								</tr>
-							 {%endfor%}
+							{%endfor%}
 						</tbody>
 					</table>
 						<div class="pagination pagination-centered">
@@ -130,11 +160,18 @@
 				           <h4>Nothing matches your search!</h4>
 				{% endif %}
 			</div>
-		    <script>
-		    $(document).ready(function() {
-		    	$('.commit > div').popover({placement:'left'})
-		    });
-		    </script>
+				<script>
+				$(document).ready(function() {
+					$('.commit > div').popover({placement:'left'})
+					$('.chbxtoggle').each(function () {
+						showhideTableColumn($(this).attr('id'), $(this).is(':checked'))
+					});
+					//turn edit columns dropdown into a multi-select menu$
+					$('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+						e.stopPropagation();
+					});$
+				});
+			</script>
 		{% endblock %}
 	</body>
 </html>
