@@ -61,6 +61,7 @@ def search(request, template_name, items = None, page = None, query = None):
     if query == "" or query.isspace():
         query = "all"
     elems = Info().getSearchResult(query.strip())
+    elems.sort(key=lambda r : r.BUILD.DATE, reverse=True)
     no = len(elems)
     if no == 0:
         return render_to_response("error-page.html", {"query" : query}, RequestContext(request))
