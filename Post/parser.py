@@ -10,6 +10,7 @@
 import sys, os, json, re
 from Post.models import Build, BuildFailure
 from django.conf import settings
+from django.utils import timezone
 from datetime import datetime
 
 class Parser:
@@ -30,7 +31,7 @@ class Parser:
         NAME = str(jsondata['username'])
         EMAIL = str(jsondata['email'])
         g = re.match(r'(.*): (.*)', str(BRANCH_COMMIT))
-        b=Build(DATE = datetime.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
+        b=Build(DATE = timezone.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
         b.save()
         failures = jsondata['failures']
         for fail in failures:

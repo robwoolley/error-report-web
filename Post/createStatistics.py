@@ -39,6 +39,10 @@ class Statistics:
     def chart_statistics(self, string):
         startdate = datetime.now()
         enddate = startdate - timedelta(days=30)
+        if string == "DATE":
+            date = Build.objects.filter(DATE__range=[enddate, startdate]).values('DATE').annotate(dcount=Count('DATE'))
+            items = list(date)
+            return self.create_statistic(items, "DATE")
         if string == "MACHINE":
             machines = Build.objects.filter(DATE__range=[enddate, startdate]).values('MACHINE').annotate(dcount=Count('MACHINE'))
             items = list(machines)

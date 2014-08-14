@@ -16,6 +16,7 @@
 					<table class="table table-bordered table-hover">
 						<thead>
 							<tr>
+								<th>Submitted on</th>
 								<th>Recipe</th>
 								<th>Recipe version</th>
 								<th>Task</th>
@@ -31,6 +32,7 @@
 						<tbody>
 							{%for detail in details %}
 								<tr>
+									<td><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
 									<td><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>

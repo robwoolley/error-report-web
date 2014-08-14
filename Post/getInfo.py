@@ -68,6 +68,9 @@ class Info:
                 except:
                     pass
 
+            if category == "DATE":
+                build = Build.objects.filter(DATE__icontains = string)
+                results.append(self.getBuildFailures(build))
             if category == "MACHINE":
                 build = Build.objects.filter(MACHINE__icontains = string)
                 results.append(self.getBuildFailures(build))
