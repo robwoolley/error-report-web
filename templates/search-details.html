@@ -34,6 +34,49 @@
 				</div>
 				<div class="navbar">
 					<div class="navbar-inner">
+						<form class="form-inline pull-right">
+							{% if no > 10 %}
+								<label>Show rows:</label>
+										<select class="paginationLimit input-mini" onchange="javascript:window.open('{% url entry_args %}?items='+this.value+'&page={{ details.number }}&query={{ d }}', '_self')">
+										{% ifequal items "10" %}
+											<option selected="selected" value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "25"%}
+											<option value = "10">10</option>
+											<option selected="selected" value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "50"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option selected="selected" value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "100"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option selected="selected" value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "150"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option selected="selected" value = "150">150</option>
+										{%endifequal%}
+										</select>
+						</form>
+						<span class="divider-vertical pull-right"></span>
+							{% endif %}
 						{% if tablecols %}
 							<div class="btn-group pull-right">
 								<button class="btn dropdown-toggle" data-toggle="dropdown">Edit columns
@@ -95,9 +138,9 @@
 						</tbody>
 					</table>
 						<div class="pagination pagination-centered">
+							<form class="form-inline pull-right">
 							{% if no > 10 %}
-							<div class="pull-right">
-								<span class="help-inline">Show rows:</span>
+							<label>Show rows:</label>
 									<form>
 										<select class="paginationLimit" style="margin-top:5px;margin-bottom:0px;width:60px;" onchange="javascript:window.open('{% url entry_args %}?items='+this.value+'&page={{ details.number }}&query={{ d }}', '_self')">
 											{% ifequal items "10" %}
@@ -137,8 +180,7 @@
 											{%endifequal%}
 										</select>
 									</form>
-								</span>
-							</div>
+							</form>
 							{% endif %}
 							 <ul>
 								{% if details.has_previous %}
