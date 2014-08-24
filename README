@@ -37,6 +37,13 @@ Maintenance
 
 The code for this application is maintained by the Yocto Project.
 
+The latest version of the code can always be found here:
+
+  http://git.yoctoproject.org/cgit/cgit.cgi/error-report-web/
+
+Contributions are welcome. Please send patches / pull requests to
+yocto@yoctoproject.org with '[error-report-web]' in the subject.
+
 
 License
 -------
