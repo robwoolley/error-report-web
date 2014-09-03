@@ -6,8 +6,9 @@
 */
 
 body {
-	padding:50px;
+	padding: 70px 40px;
 }
+
 .logo img {
     height: 25px;
     width: auto !important;
@@ -56,7 +57,11 @@ td a:visited {
 	margin: 10px 0 0;
 }
 
-.navbar-inner form {
+.navbar-inner .navbar-search {
+	margin-top: 7px;
+}
+
+.navbar-inner form, .pagination form {
 	margin: 5px 0 0;
 }
 

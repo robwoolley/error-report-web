@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^Errors/Search/Latest/$', 'Post.views.search', {'template_name' : 'latest-errors.html'}, name= "latest_errors"),
     url(r'^Errors/Search/Args/$', 'Post.views.search', {'template_name' : 'search-details.html'}, name = "entry_args"),
     url(r'^Errors/Search/(?P<items>\d+)/(?P<page>\d+)/(?P<query>\w+)/', 'Post.views.search', {'template_name' : 'search-details.html'}, name = "entry"),
     url(r'^Errors/Search/(?P<page>\d+)/(?P<query>\d+)/', 'Post.views.viewEntry', {'template_name' : 'search-details.html'}),
@@ -27,5 +28,6 @@ urlpatterns = patterns('',
     url(r'^Errors/ErrorPage/$', direct_to_template, {'template':"error-page.html"}, name = "errorpage"),
     url(r'^ClientPost/', 'Post.views.addData'),
     url(r'^Errors/', direct_to_template, {'template':"home.html"}, name = "main"),
-    url(r'.*', redirect_to, {'url' : '/Errors/'}, name = "home"),
+    url(r'.*', redirect_to, {'url' : '/Errors/Search/Latest/?items=25&page=1&query=all_latest'}),
+
 )

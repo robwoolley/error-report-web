@@ -58,13 +58,26 @@ def search(request, template_name, items = None, page = None, query = None):
          page = request.GET.get('page', '')
          query = request.GET.get('query', '')
          items = request.GET.get('items', '')
+
+    latest = False
+
+    if "latest" in query:
+         latest = True
+         query = query.replace("_latest", "")
+
     if query == "" or query.isspace():
         query = "all"
     elems = Info().getSearchResult(query.strip())
     elems.sort(key=lambda r : r.BUILD.DATE, reverse=True)
     no = len(elems)
     if no == 0:
-        return render_to_response("error-page.html", {"query" : query}, RequestContext(request))
+        return render_to_response("error-page.html", {"latest" : latest,  "query" : query}, RequestContext(request))
+
+    if latest is True:
+        if no > 150:
+            elems = elems[:150]
+            no = 150
+
     paginator = Paginator(elems, items)
     try:
         c = paginator.page(page)

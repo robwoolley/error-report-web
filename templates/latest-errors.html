@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load projecttags %}
+<!DOCTYPE html>
+<html>
+	<body>
+		{% block content %}
+		<script>$
+		function showhideTableColumn( clname, sh) {
+			if ( sh ) {
+				$('.' + clname ).show( 100 );
+			}
+			else {
+				$('.' + clname ).hide( 100 );
+			}
+			// save cookie for all checkboxes$
+			save = '';
+			$( '.chbxtoggle' ).each(function( ) {
+				if ( $( this ).attr( 'id' ) != undefined ) {
+					save += ';' + $( this ).attr( 'id' ) +':'+ $( this ).is( ':checked' )
+				}
+			});
+			$.cookie( '_displaycols_{{objectname}}', save );
+			save = '';
+		}
+		</script>
+
+		<div class="row-fluid">
+			<ul class="nav nav-pills">
+				{% ifequal d 'autobuilder' %}
+					<li> <a href="{% url latest_errors %}?items=25&page=1&query=all_latest" >Latest errors</a> </li>
+					<li class="active"> <a href="{% url latest_errors %}?items=25&page=1&query=autobuilder_latest" >Latest Autobuilder errors</a></li>
+				{% else %}
+					<li class="active"> <a href="{% url latest_errors %}?items=25&page=1&query=all_latest" >Latest errors</a> </li>
+					<li> <a href="{% url latest_errors %}?items=25&page=1&query=autobuilder_latest" >Latest Autobuilder errors</a></li>
+				{% endifequal %}
+					<li> <a href="{% url main %}" >Statistics </a> </li>
+			</ul>
+			<div class="navbar">
+				<div class="navbar-inner">
+					{% if no > 10 %}
+						<form class="form-inline pull-right">
+							<label>Show latest:</label>
+								<select class="paginationLimit input-mini" onchange="javascript:window.open('{% url latest_errors %}?items='+this.value+'&page={{ details.number }}', '_self')">
+								{% ifequal items "10" %}
+									<option selected="selected" value = "10">10</option>
+									<option value = "25">25</option>
+									<option value = "50">50</option>
+									<option value = "100">100</option>
+									<option value = "150">150</option>
+								{%endifequal%}
+								{% ifequal items "25"%}
+									<option value = "10">10</option>
+									<option selected="selected" value = "25">25</option>
+									<option value = "50">50</option>
+									<option value = "100">100</option>
+									<option value = "150">150</option>
+								{%endifequal%}
+								{% ifequal items "50"%}
+									<option value = "10">10</option>
+									<option value = "25">25</option>
+									<option selected="selected" value = "50">50</option>
+									<option value = "100">100</option>
+									<option value = "150">150</option>
+								{%endifequal%}
+								{% ifequal items "100"%}
+									<option value = "10">10</option>
+									<option value = "25">25</option>
+									<option value = "50">50</option>
+									<option selected="selected" value = "100">100</option>
+									<option value = "150">150</option>
+								{%endifequal%}
+								{% ifequal items "150"%}
+									<option value = "10">10</option>
+									<option value = "25">25</option>
+									<option value = "50">50</option>
+									<option value = "100">100</option>
+									<option selected="selected" value = "150">150</option>
+								{%endifequal%}
+								</select>
+						</form>
+						<span class="divider-vertical pull-right"></span>
+					{% endif %}
+					<div class="btn-group pull-right">
+					{% ifequal d "autobuilder" %}
+						<form style="display:inline" action="{% url entry_args %}" method="GET">
+							<div class="input-append">
+								<input type="text" name="items" value=10 style="display: none;">
+								<input type="text" name="page" value=1 style="display: none;">
+								<input type="text" name="query" value=autobuilder style="display: none;">
+							</div>
+							<button type="submit" value="View All" class="btn dropdown-toggle">View all Autobuilder errors </button>
+						</form>
+					{% endifequal %}
+					{% if tablecols %}
+						<button class="btn dropdown-toggle" data-toggle="dropdown">Edit columns
+							<span class="caret"></span>
+						</button>
+						<ul id='editcol' class="dropdown-menu">
+							{% for i in tablecols|sortcols %}
+							<li>
+							<label {% if not i.clclass %} class="checkbox muted" {%else%} class="checkbox" {%endif%}>
+								<input type="checkbox" class="chbxtoggle"
+								{% if i.clclass %}
+									id="{{i.clclass}}"
+									value="ct{{i.name}}"
+									{% if not i.hidden %}
+										checked="checked"
+									{%endif%}
+									onclick="showhideTableColumn($(this).attr('id'), $(this).is(':checked'))"
+								{%else%}
+									checked disabled
+								{% endif %}/>   {{i.name}}
+							</label>
+							</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+					</div>
+				</div> <!-- navbar-inner -->
+			</div>
+			{% if details %}
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							{% for i in tablecols %} <th class="{{i.dclass}} {{i.clclass}}"> {{i.name}} </th> {%endfor%}
+						</tr>
+					</thead>
+					<tbody>
+						{%for detail in details %}
+							<tr class="data">
+								<td class="submitted_on"> <a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
+								<td class="recipe"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a></td>
+								<td class="recipe_version"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
+								<td class="task"><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a></td>
+								<td class="machine"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a></td>
+								<td class="distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a></td>
+								<td class="build_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a></td>
+								<td class="target_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a></td>
+								<td class="host_distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a></td>
+								<td class="branch"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BRANCH }} </a></td>
+								<td class="commit">
+									{% autoescape off %}
+										<div class="btn" rel="popover" data-content= {{ detail.BUILD.COMMIT|escape}} title="">
+											{% endautoescape %}
+										{{ detail.BUILD.COMMIT|truncatechars:10}}
+										</div>
+								</td>
+								<td class="submitter"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a></td>
+							</tr>
+						{%endfor%}
+					</tbody>
+				</table>
+					<div class="pagination pagination-centered">
+						<form class="form-inline pull-right">
+						{% if no > 10 %}
+						<label>Show latest:</label>
+								<form>
+									<select class="paginationLimit input-mini" onchange="javascript:window.open('{% url latest_errors %}?items='+this.value+'&page={{details.number}}', '_self')">
+										{% ifequal items "10" %}
+											<option selected="selected" value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "25"%}
+											<option value = "10">10</option>
+											<option selected="selected" value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "50"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option selected="selected" value = "50">50</option>
+											<option value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "100"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option selected="selected" value = "100">100</option>
+											<option value = "150">150</option>
+										{%endifequal%}
+										{% ifequal items "150"%}
+											<option value = "10">10</option>
+											<option value = "25">25</option>
+											<option value = "50">50</option>
+											<option value = "100">100</option>
+											<option selected="selected" value = "150">150</option>
+										{%endifequal%}
+									</select>
+								</form>
+						</form>
+						{% endif %}
+					</div>
+			{% endif %}
+			{% if result %}
+			           <h4>Nothing matches your search!</h4>
+			{% endif %}
+		</div> <!-- row-fluid -->
+		<script>
+			$(document).ready(function() {
+				$('.commit > div').popover({placement:'left'})
+            
+				// we load cookies for the column display$
+				save = $.cookie('_displaycols_{{objectname}}');
+				if (save != undefined) {
+					setting = save.split(';');
+					for ( i = 0; i < setting.length; i++) {
+						if (setting[i].length > 0) {
+							splitlist = setting[i].split(':');
+							id = splitlist[0], v = splitlist[1];
+							if (v == 'true') {
+								$('.chbxtoggle#'+id).prop('checked', true);
+							}
+							else {
+								$('.chbxtoggle#'+id).prop('checked', false);
+							}
+						}
+					}
+				}
+				
+				$('.chbxtoggle').each(function () {
+					showhideTableColumn($(this).attr('id'), $(this).is(':checked'))
+				});
+				//turn edit columns dropdown into a multi-select menu$
+				$('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+					e.stopPropagation();
+				});$
+			});
+		</script>
+		{% endblock %}
+	</body>
+</html>

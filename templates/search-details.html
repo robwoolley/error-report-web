@@ -37,7 +37,7 @@
 						<form class="form-inline pull-right">
 							{% if no > 10 %}
 								<label>Show rows:</label>
-										<select class="paginationLimit input-mini" onchange="javascript:window.open('{% url entry_args %}?items='+this.value+'&page={{ details.number }}&query={{ d }}', '_self')">
+										<select class="paginationLimit input-mini" style="margin-top:5px;margin-bottom:0px;width:60px;" onchange="javascript:window.open('{% url entry_args %}?items='+this.value+'&page={{ details.number }}&query={{ d }}', '_self')">
 										{% ifequal items "10" %}
 											<option selected="selected" value = "10">10</option>
 											<option value = "25">25</option>
