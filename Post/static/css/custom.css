@@ -68,3 +68,18 @@ td a:visited {
 .dropdown-menu {
 	padding: 10px;
 }
+
+.sorted {
+	color: #333;
+	font-weight: bold;
+}
+.sorting-arrows {
+	font-size: 12px;
+}
+.sorted:hover {
+	color: #000;
+	text-decoration: underline;
+}
+th a, th span {
+	font-weight: normal;
+}

@@ -30,6 +30,61 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.sites.models import RequestSite
 from collections import OrderedDict
 
+def sort_elems(elems, ordering_string, default_orderby):
+    aux = ordering_string
+    if ordering_string:
+        column, order = aux.split(':')
+    else:
+        column, order = default_orderby.split(':')
+    if order == '-':
+        rev = True
+    else:
+        rev = False
+
+    if column == "submitted_on":
+        elems.sort(key=lambda r : r.BUILD.DATE, reverse=not rev)
+        return elems
+    else:
+        elems.sort(key=lambda r : r.BUILD.DATE, reverse=True) # Secondary sorting criteria
+
+    if column == "machine":
+        elems.sort(key=lambda r : r.BUILD.MACHINE, reverse=rev)
+    elif column == "branch":
+        elems.sort(key=lambda r : r.BUILD.BRANCH, reverse=rev)
+    elif column == "target":
+        elems.sort(key=lambda r : r.BUILD.TARGET, reverse=rev)
+    elif column == "distro":
+        elems.sort(key=lambda r : r.BUILD.DISTRO, reverse=rev)
+    elif column == "host_distro":
+        elems.sort(key=lambda r : r.BUILD.NATIVELSBSTRING, reverse=rev)
+    elif column == "build_sys":
+        elems.sort(key=lambda r : r.BUILD.BUILD_SYS, reverse=rev)
+    elif column == "target_sys":
+        elems.sort(key=lambda r : r.BUILD.TARGET_SYS, reverse=rev)
+    elif column == "submitter":
+        elems.sort(key=lambda r : r.BUILD.NAME, reverse=rev)
+    elif column == "email":
+        elems.sort(key=lambda r : r.BUILD.EMAIL, reverse=rev)
+    elif column == "task":
+        elems.sort(key=lambda r : r.TASK, reverse=rev)
+    elif column == "recipe":
+        elems.sort(key=lambda r : r.RECIPE, reverse=rev)
+    return elems
+
+def _get_toggle_order(request, orderkey, reverse = False):
+    if reverse:
+        return "%s:+" % orderkey if request.GET.get('orderby', "") == "%s:-" % orderkey else "%s:-" % orderkey
+    else:
+        return "%s:-" % orderkey if request.GET.get('orderby', "") == "%s:+" % orderkey else "%s:+" % orderkey
+
+def _get_toggle_order_icon(request, orderkey):
+    if request.GET.get('orderby', "") == "%s:+"%orderkey:
+        return "down"
+    elif request.GET.get('orderby', "") == "%s:-"%orderkey:
+        return "up"
+    else:
+        return ""
+
 @csrf_exempt
 def addData(request):
     response = ''
@@ -53,14 +108,20 @@ def viewEntry(request,template_name, page=None, query=None):
     return HttpResponseRedirect(reverse('entry', args=(), kwargs={"items":10, "page":page, "query":query}))
 
 @csrf_exempt
-def search(request, template_name, items = None, page = None, query = None):
+def search(request, template_name, items = None, page = None, query = None, orderby = None):
     if items == None and page == None and query == None:
          page = request.GET.get('page', '')
          query = request.GET.get('query', '')
          items = request.GET.get('items', '')
+         orderby = request.GET.get('orderby', '')
+
+    default_orderby = 'submitted_on:+';
+    if orderby == "":
+        get_values = request.GET.copy()
+        get_values['orderby'] = default_orderby
+        request.GET = get_values
 
     latest = False
-
     if "latest" in query:
          latest = True
          query = query.replace("_latest", "")
@@ -68,7 +129,7 @@ def search(request, template_name, items = None, page = None, query = None):
     if query == "" or query.isspace():
         query = "all"
     elems = Info().getSearchResult(query.strip())
-    elems.sort(key=lambda r : r.BUILD.DATE, reverse=True)
+    elems = sort_elems(elems, orderby, default_orderby)
     no = len(elems)
     if no == 0:
         return render_to_response("error-page.html", {"latest" : latest,  "query" : query}, RequestContext(request))
@@ -105,20 +166,64 @@ def search(request, template_name, items = None, page = None, query = None):
         "no" : no,
         'list' : paginator.page_range[index:end],
         'items' : items,
+        'orderby': orderby,
+        'default_orderby' : default_orderby,
         'objectname' : 'errors',
         'tablecols' : [
-        {'name': 'Submitted on', 'clclass': 'submitted_on'},
-        {'name': 'Recipe'},
-        {'name': 'Recipe version', 'clclass': 'recipe_version'},
-        {'name': 'Task'},
-        {'name': 'Machine'},
-        {'name': 'Distro'},
-        {'name': 'Build system', 'clclass': 'build_sys', 'hidden': 1},
-        {'name': 'Target system', 'clclass': 'target_sys', 'hidden': 1},
-        {'name': 'Host distro', 'clclass': 'host_distro'},
-        {'name': 'Branch', 'clclass': 'branch'},
-        {'name': 'Commit', 'clclass': 'commit'},
-        {'name': 'Submitter', 'clclass': 'submitter','hidden': 1}],
+        {'name': 'Submitted on',
+         'orderfield': _get_toggle_order(request, "submitted_on", True),      # adds ordering by the field value;
+         'ordericon':_get_toggle_order_icon(request, "submitted_on"),
+        },
+        {'name': 'Recipe',
+         'orderfield': _get_toggle_order(request, "recipe", False),
+         'ordericon':_get_toggle_order_icon(request, "recipe"),
+        },
+        {'name': 'Recipe version',
+         'clclass': 'recipe_version',
+        },
+        {'name': 'Task',
+         'orderfield': _get_toggle_order(request, "task", False),
+         'ordericon':_get_toggle_order_icon(request, "task"),
+        },
+        {'name': 'Machine',
+         'orderfield': _get_toggle_order(request, "machine", False),
+         'ordericon':_get_toggle_order_icon(request, "machine"),
+        },
+        {'name': 'Distro',
+         'orderfield': _get_toggle_order(request, "distro", False),
+         'ordericon':_get_toggle_order_icon(request, "distro"),
+        },
+        {'name': 'Build system',
+         'clclass': 'build_sys',
+         'hidden': 1,
+         'orderfield': _get_toggle_order(request, "build_sys", False),
+         'ordericon':_get_toggle_order_icon(request, "build_sys"),
+        },
+        {'name': 'Target system',
+         'clclass': 'target_sys',
+         'hidden': 1,
+         'orderfield': _get_toggle_order(request, "target_sys", False),
+         'ordericon':_get_toggle_order_icon(request, "target_sys"),
+        },
+        {'name': 'Host distro',
+         'clclass': 'host_distro',
+         'orderfield': _get_toggle_order(request, "host_distro", False),
+         'ordericon':_get_toggle_order_icon(request, "host_distro"),
+        },
+        {'name': 'Branch',
+         'clclass': 'branch',
+         'orderfield': _get_toggle_order(request, "branch", False),
+         'ordericon':_get_toggle_order_icon(request, "branch"),
+        },
+        {'name': 'Commit',
+         'clclass': 'commit',
+        },
+        {'name': 'Submitter',
+         'clclass': 'submitter',
+         'hidden': 1,
+         'orderfield': _get_toggle_order(request, "submitter", False),
+         'ordericon':_get_toggle_order_icon(request, "submitter"),
+        }],
     }
 
     return render_to_response(template_name, context, RequestContext(request))
