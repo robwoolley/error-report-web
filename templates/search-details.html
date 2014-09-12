@@ -318,50 +318,6 @@
 					</tbody>
 					</table>
 						<div class="pagination pagination-centered">
-							<form class="form-inline pull-right">
-							{% if no > 10 %}
-							<label>Show rows:</label>
-								<form>
-									<select class="paginationLimit input-mini" onchange="javascript:reload_params({'page': '1', 'items' : +this.value })">
-										{% ifequal items "10" %}
-											<option selected="selected" value = "10">10</option>
-											<option value = "25">25</option>
-											<option value = "50">50</option>
-											<option value = "100">100</option>
-											<option value = "150">150</option>
-										{%endifequal%}
-										{% ifequal items "25"%}
-											<option value = "10">10</option>
-											<option selected="selected" value = "25">25</option>
-											<option value = "50">50</option>
-											<option value = "100">100</option>
-											<option value = "150">150</option>
-										{%endifequal%}
-										{% ifequal items "50"%}
-											<option value = "10">10</option>
-											<option value = "25">25</option>
-											<option selected="selected" value = "50">50</option>
-											<option value = "100">100</option>
-											<option value = "150">150</option>
-										{%endifequal%}
-										{% ifequal items "100"%}
-											<option value = "10">10</option>
-											<option value = "25">25</option>
-											<option value = "50">50</option>
-											<option selected="selected" value = "100">100</option>
-											<option value = "150">150</option>
-										{%endifequal%}
-										{% ifequal items "150"%}
-											<option value = "10">10</option>
-											<option value = "25">25</option>
-											<option value = "50">50</option>
-											<option value = "100">100</option>
-											<option selected="selected" value = "150">150</option>
-										{%endifequal%}
-									</select>
-								</form>
-							</form>
-							{% endif %}
 							 <ul>
 								{% if details.has_previous %}
 								<li><a href="javascript:reload_params({'page' : '{{ details.previous_page_number }}'})">Previous</a></li>
@@ -382,7 +338,49 @@
 								{% else %}
 									<li class="disabled"><span>Next</span></li>
 								{% endif %}
-							</ul>
+							</ul>	
+							{% if no > 10 %}												
+							<form class="form-inline pull-right">
+							<label>Show rows:</label>
+								<select class="paginationLimit input-mini" onchange="javascript:reload_params({'page': '1', 'items' : +this.value })">
+									{% ifequal items "10" %}
+										<option selected="selected" value = "10">10</option>
+										<option value = "25">25</option>
+										<option value = "50">50</option>
+										<option value = "100">100</option>
+										<option value = "150">150</option>
+									{%endifequal%}
+									{% ifequal items "25"%}
+										<option value = "10">10</option>
+										<option selected="selected" value = "25">25</option>
+										<option value = "50">50</option>
+										<option value = "100">100</option>
+										<option value = "150">150</option>
+									{%endifequal%}
+									{% ifequal items "50"%}
+										<option value = "10">10</option>
+										<option value = "25">25</option>
+										<option selected="selected" value = "50">50</option>
+										<option value = "100">100</option>
+										<option value = "150">150</option>
+									{%endifequal%}
+									{% ifequal items "100"%}
+										<option value = "10">10</option>
+										<option value = "25">25</option>
+										<option value = "50">50</option>
+										<option selected="selected" value = "100">100</option>
+										<option value = "150">150</option>
+									{%endifequal%}
+									{% ifequal items "150"%}
+										<option value = "10">10</option>
+										<option value = "25">25</option>
+										<option value = "50">50</option>
+										<option value = "100">100</option>
+										<option selected="selected" value = "150">150</option>
+									{%endifequal%}
+								</select>
+							</form>
+							{% endif %}
 						</div>
 				{% endif %}
 				{% if result %}
