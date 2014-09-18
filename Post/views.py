@@ -55,7 +55,7 @@ def sort_elems(elems, ordering_string, default_orderby):
         elems.sort(key=lambda r : r.BUILD.TARGET, reverse=rev)
     elif column == "distro":
         elems.sort(key=lambda r : r.BUILD.DISTRO, reverse=rev)
-    elif column == "host_distro":
+    elif column == "nativelsbstring":
         elems.sort(key=lambda r : r.BUILD.NATIVELSBSTRING, reverse=rev)
     elif column == "build_sys":
         elems.sort(key=lambda r : r.BUILD.BUILD_SYS, reverse=rev)
@@ -108,14 +108,22 @@ def viewEntry(request,template_name, page=None, query=None):
     return HttpResponseRedirect(reverse('entry', args=(), kwargs={"items":10, "page":page, "query":query}))
 
 @csrf_exempt
-def search(request, template_name, items = None, page = None, query = None, orderby = None):
+def search(request, template_name, items = None, page = None, query = None, orderby = None, filter = None):
     if items == None and page == None and query == None:
          page = request.GET.get('page', '')
          query = request.GET.get('query', '')
          items = request.GET.get('items', '')
          orderby = request.GET.get('orderby', '')
+         filter_string = request.GET.get('filter', '')
 
     default_orderby = 'submitted_on:+';
+
+    # can't filter and order by the same column
+    if orderby:
+        orderby_column, order = orderby.split(':')
+        if filter_string and orderby_column.upper() in filter_string:
+            orderby = ""
+
     if orderby == "":
         get_values = request.GET.copy()
         get_values['orderby'] = default_orderby
@@ -128,7 +136,7 @@ def search(request, template_name, items = None, page = None, query = None, orde
 
     if query == "" or query.isspace():
         query = "all"
-    elems = Info().getSearchResult(query.strip())
+    (elems, non_filtered_elems) = Info().getSearchResult(query.strip(), filter_string)
     elems = sort_elems(elems, orderby, default_orderby)
     no = len(elems)
     if no == 0:
@@ -162,12 +170,14 @@ def search(request, template_name, items = None, page = None, query = None, orde
 
     context = {
         'details':c,
+        'non_filtered_details' : non_filtered_elems,
         'd' : query,
         "no" : no,
         'list' : paginator.page_range[index:end],
         'items' : items,
         'orderby': orderby,
         'default_orderby' : default_orderby,
+        'filter_string' : filter_string,
         'objectname' : 'errors',
         'tablecols' : [
         {'name': 'Submitted on',
@@ -175,6 +185,7 @@ def search(request, template_name, items = None, page = None, query = None, orde
          'ordericon':_get_toggle_order_icon(request, "submitted_on"),
         },
         {'name': 'Recipe',
+         'filter': 'RECIPE',
          'orderfield': _get_toggle_order(request, "recipe", False),
          'ordericon':_get_toggle_order_icon(request, "recipe"),
         },
@@ -182,43 +193,52 @@ def search(request, template_name, items = None, page = None, query = None, orde
          'clclass': 'recipe_version',
         },
         {'name': 'Task',
+         'filter': 'TASK',
          'orderfield': _get_toggle_order(request, "task", False),
          'ordericon':_get_toggle_order_icon(request, "task"),
         },
         {'name': 'Machine',
+         'filter': 'MACHINE',
          'orderfield': _get_toggle_order(request, "machine", False),
          'ordericon':_get_toggle_order_icon(request, "machine"),
         },
         {'name': 'Distro',
+         'filter': 'DISTRO',
          'orderfield': _get_toggle_order(request, "distro", False),
          'ordericon':_get_toggle_order_icon(request, "distro"),
         },
         {'name': 'Build system',
+         'filter': 'BUILD_SYS',
          'clclass': 'build_sys',
          'hidden': 1,
          'orderfield': _get_toggle_order(request, "build_sys", False),
          'ordericon':_get_toggle_order_icon(request, "build_sys"),
         },
         {'name': 'Target system',
+         'filter': 'TARGET_SYS',
          'clclass': 'target_sys',
          'hidden': 1,
          'orderfield': _get_toggle_order(request, "target_sys", False),
          'ordericon':_get_toggle_order_icon(request, "target_sys"),
         },
         {'name': 'Host distro',
-         'clclass': 'host_distro',
-         'orderfield': _get_toggle_order(request, "host_distro", False),
-         'ordericon':_get_toggle_order_icon(request, "host_distro"),
+         'filter': 'NATIVELSBSTRING',
+         'clclass': 'nativelsbstring',
+         'orderfield': _get_toggle_order(request, "nativelsbstring", False),
+         'ordericon':_get_toggle_order_icon(request, "nativelsbstring"),
         },
         {'name': 'Branch',
+         'filter': 'BRANCH',
          'clclass': 'branch',
          'orderfield': _get_toggle_order(request, "branch", False),
          'ordericon':_get_toggle_order_icon(request, "branch"),
         },
         {'name': 'Commit',
+         'filter': 'COMMIT',
          'clclass': 'commit',
         },
         {'name': 'Submitter',
+         'filter': 'NAME',
          'clclass': 'submitter',
          'hidden': 1,
          'orderfield': _get_toggle_order(request, "submitter", False),

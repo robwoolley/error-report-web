@@ -91,12 +91,26 @@ th a, th span {
 	margin: 10px 0;
 }
 .popover-content p {
-		margin-top: 10px;
+	margin-top: 10px;
 }
 .popover-content p > a {
-		color: #0088CC;
+	color: #0088CC;
 }
 .popover-content p > a:hover {
-		color: #005580;
-			text-decoration: underline;
+	color: #005580;
+	text-decoration: underline;
+}
+.icon-filter {
+	color: #0088CC;
+	font-size:16px;
+	padding-left:3px;
+}
+
+.icon-filter:hover {
+	color: #005580;
+	cursor: pointer;
+	text-decoration:none;
+}
+.filter-applied {
+	background-color: #f4f5f5;
 }

@@ -37,7 +37,30 @@ class Info:
                     return category
         return ""
 
-    def getSearchResult(self, string):
+    def getFilteredList(self, results, filter_string):
+        arg_list = [arg.strip() for arg in filter_string.split(':')]
+        if arg_list[1] == "RECIPE":
+            return filter(lambda x: x.RECIPE == arg_list[0], results)
+        elif arg_list[1] == "TASK":
+            return filter(lambda x: x.TASK == arg_list[0], results)
+        elif arg_list[1] == "MACHINE":
+            return filter(lambda x: x.BUILD.MACHINE == arg_list[0], results)
+        elif arg_list[1] == "DISTRO":
+            return filter(lambda x: x.BUILD.DISTRO == arg_list[0], results)
+        elif arg_list[1] == "BUILD_SYS":
+            return filter(lambda x: x.BUILD.BUILD_SYS == arg_list[0], results)
+        elif arg_list[1] == "TARGET_SYS":
+            return filter(lambda x: x.BUILD.TARGET_SYS == arg_list[0], results)
+        elif arg_list[1] == "NATIVELSBSTRING":
+            return filter(lambda x: x.BUILD.NATIVELSBSTRING == arg_list[0], results)
+        elif arg_list[1] == "BRANCH":
+            return filter(lambda x: x.BUILD.BRANCH == arg_list[0], results)
+        elif arg_list[1] == "NAME":
+            return filter(lambda x: x.BUILD.NAME == arg_list[0], results)
+        elif arg_list[1] == "COMMIT":
+            return filter(lambda x: x.BUILD.COMMIT == arg_list[0], results)
+
+    def getSearchResult(self, string, filter_string):
         results = []
         category = ""
 
@@ -51,11 +74,15 @@ class Info:
                     string = search_list[i+1]
                     i = i + 1
                 except:
-                    return self.flatten(results)
+                    results = self.flatten(results)
+                    return (results, results)
 
             if string == "all":
                 results.append(BuildFailure.objects.all())
-                return self.flatten(results)
+                results = self.flatten(results)
+                if filter_string:
+                    return  (self.getFilteredList((results), filter_string), results)
+                return (results, results)
 
             try:
                 build_id = int(string)
@@ -107,7 +134,12 @@ class Info:
             elif category == "TASK":
                 buildFs = BuildFailure.objects.filter(TASK__icontains = string)
                 results.append(buildFs)
-        return self.flatten(results)
+
+        results = self.flatten(results)
+        if filter_string:
+            return (self.getFilteredList(results, filter_string), results)
+
+        return (results, results)
 
     def getBuildFailures(self, results):
         bfs=[]
