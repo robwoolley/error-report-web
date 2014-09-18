@@ -41,14 +41,24 @@
 							<dd>{{ detail.BUILD.BRANCH }}</dd>
 							<dt>Commit:</dt>
 							<dd class = "commit">{{ detail.BUILD.COMMIT }}</dd>
+								{% if "yocto-autobuilder" in detail.BUILD.NAME and "master" in detail.BUILD.BRANCH %}
+									<dd><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id={{detail.BUILD.COMMIT}}">View commit</a></dd> 
+								{% endif %}
 							<dt>Submitter:</dt>
-							<dd>{{ detail.BUILD.NAME }}</dd>
+								{% if "@" in detail.BUILD.EMAIL %}
+									<dd> <a href="mailto:{{detail.BUILD.EMAIL}}">{{detail.BUILD.EMAIL}}</a> </dd>
+								{% else %}
+									<dd>{{ detail.BUILD.NAME }}</dd>
+								{% endif %}
+								<!--
+								{% if "yocto-autobuilder" in detail.BUILD.NAME %}
+										<dd><a target="_blank" href="#" >View Autobuilder failed step</a></dd>
+								{% endif %}
+								-->
 						</dl>
-						{% ifnotequal detail.BUILD.EMAIL "" %}
-							{% if "@" in detail.BUILD.EMAIL %}
-								<a class="btn btn-large btn-primary" href="mailto:{{detail.BUILD.EMAIL}}">Email submitter</a>
-							{% endif %}
-						{% endifnotequal %}
+						<div>
+						<a class="btn btn-large btn-block" target="_blank" href="https://bugzilla.yoctoproject.org/enter_bug.cgi" >Open a bug</a>
+						</div>
 				{% endfor %}
 				{% endif %}
 				</div>

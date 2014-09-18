@@ -13,7 +13,7 @@
 				<li> <a href="{% url main %}" >Statistics </a> </li>
 			</ul>
 			<div class="alert">
-				{% ifequal query "autobuilder" %}
+				{% ifequal d "autobuilder" %}
 					<h3>No Autobuilder errors found</h3>
 				{% else %}
 					<h3>No errors found</h3>

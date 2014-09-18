@@ -83,3 +83,20 @@ td a:visited {
 th a, th span {
 	font-weight: normal;
 }
+.dl-vertical dd {
+	margin-bottom: 10px;
+}
+.dd a {
+	display: block;
+	margin: 10px 0;
+}
+.popover-content p {
+		margin-top: 10px;
+}
+.popover-content p > a {
+		color: #0088CC;
+}
+.popover-content p > a:hover {
+		color: #005580;
+			text-decoration: underline;
+}

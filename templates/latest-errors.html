@@ -184,12 +184,12 @@
 		<div class="row-fluid">
 			<ul class="nav nav-pills">
 				{% ifequal d 'autobuilder' %}
-					<li class="active"> <a href="javascript:reload_params({'query' : 'latest_all'})">Latest errors</a></li>
-					<li> <a href="javascript:reload_params({})">Latest Autobuilder errors</a></li>
+					<li> <a href="javascript:reload_params({'query' : 'all_latest'})">Latest errors</a></li>
+					<li class="active"> <a href="javascript:reload_params({})">Latest Autobuilder errors</a></li>
 
 				{% else %}
 					<li class="active"> <a href="javascript:reload_params({})">Latest errors</a></li>
-					<li > <a href="javascript:reload_params({'query' : 'latest_autobuilder'})">Latest Autobuilder errors</a></li>
+					<li > <a href="javascript:reload_params({'query' : 'autobuilder_latest'})">Latest Autobuilder errors</a></li>
 				{% endifequal %}
 					<li> <a href="{% url main %}" >Statistics </a> </li>
 			</ul>
@@ -318,12 +318,18 @@
 								<td class="build_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a></td>
 								<td class="target_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a></td>
 								<td class="host_distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a></td>
-								<td class="branch"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BRANCH }} </a></td>
+								<td class="branch"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BRANCH }}</a></td>
 								<td class="commit">
 									{% autoescape off %}
-										<div class="btn" rel="popover" data-content= {{ detail.BUILD.COMMIT|escape}} title="">
-											{% endautoescape %}
-										{{ detail.BUILD.COMMIT|truncatechars:10}}
+										<div class="btn" rel="popover"
+												data-content='
+													&lt;div&gt; {{ detail.BUILD.COMMIT|escape}}&lt;/div&gt;
+													{% if "yocto-autobuilder" in detail.BUILD.NAME and "master" in detail.BUILD.BRANCH %}
+														&lt;p&gt; &lt;a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id={{detail.BUILD.COMMIT}}"&gt;View commit&lt;/a&gt;&lt;/p&gt;
+													{% endif %}'
+												title="">
+									{% endautoescape %}
+									{{ detail.BUILD.COMMIT|truncatechars:10}}
 										</div>
 								</td>
 								<td class="submitter"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a></td>
@@ -384,8 +390,9 @@
 		</div> <!-- row-fluid -->
 		<script>
 			$(document).ready(function() {
-				$('.commit > div').popover({placement:'left'})
-
+				$('.commit > div').popover({
+					placement:'left',
+					html: true})
 				// we load cookies for the column display$
 				save = $.cookie('_displaycols_{{objectname}}');
 				if (save != undefined) {
