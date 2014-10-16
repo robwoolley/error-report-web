@@ -9,8 +9,8 @@
 
 		<div class="row-fluid">
 			<ul class="nav nav-pills">
-				<li><a href="{% url latest_errors %}?items=25&page=1&query=all_latest">Latest errors</a></li>
-				<li><a href="{% url latest_errors %}?items=25&page=1&query=autobuilder_latest">Latest Autobuilder errors</a></li>
+				<li><a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Latest errors</a></li>
+				<li><a href="{% url "latest_errors" %}?items=25&page=1&query=autobuilder_latest">Latest Autobuilder errors</a></li>
 				<li class="active"> <a href="#stats" data-toggle="tab">Statistics </a> </li>
 			</ul>
 
@@ -177,62 +177,62 @@
 								draw = draw.replace("chart.yAxis", "chart.yAxis.tickFormat(d3.format('%'));")
 								draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
 								draw = draw.replace("'<center><b>'+key+'</b></center>' + y + ' at '", "parseInt(graph.point.y*100)+'% '")
-								draw = draw.replace("return tooltip_str;", "d3.selectAll('.discreteBar').on('click', function(){ if(String(graph.point.x) != 'others')  window.location.href='{% url entry_args %}?items=10&page=1&query='+String(graph.point.x) }); \n return tooltip_str;\n")
+								draw = draw.replace("return tooltip_str;", "d3.selectAll('.discreteBar').on('click', function(){ if(String(graph.point.x) != 'others')  window.location.href='{% url "entry_args" %}?items=10&page=1&query='+String(graph.point.x) }); \n return tooltip_str;\n")
 								draw = draw.replace("return chart;", "nv.utils.windowResize(chart.update); \n return chart;\n")
 								return draw;
 							}
 
 							if ($("#m").text() == ""){
-								$.get('{% url statistics "MACHINE" %}', function(data){
+								$.get('{% url "statistics" "MACHINE" %}', function(data){
 								draw = modify_chart(data, "By machine", "m");
 								$("#m").html(draw);
 							})
 							}
 							if ($("#r").text() == ""){
 
-								$.get('{% url statistics "RECIPE" %}', function(data){
+								$.get('{% url "statistics" "RECIPE" %}', function(data){
 								draw = modify_chart(data, "By recipe", "r");
 								$("#r").html(draw)
 							})
 							}
 							if ($("#t").text() == ""){
 
-								$.get('{% url statistics "TARGET" %}', function(data){
+								$.get('{% url "statistics" "TARGET" %}', function(data){
 								draw = modify_chart(data, "By target", "t");
 								$("#t").html(draw)
 							})
 							}
 							if ($("#d").text() == ""){
 
-								$.get('{% url statistics "DISTRO" %}', function(data){
+								$.get('{% url "statistics" "DISTRO" %}', function(data){
 								draw = modify_chart(data, "By distro", "d");
 								$("#d").html(draw)
 							})
 							}
 							if ($("#b").text() == ""){
 
-								$.get('{% url statistics "BRANCH" %}', function(data){
+								$.get('{% url "statistics" "BRANCH" %}', function(data){
 								draw = modify_chart(data, "By branch", "b");
 								$("#b").html(draw)
 							})
 							}
 							if ($("#c").text() == ""){
 
-								$.get('{% url statistics "COMMIT" %}', function(data){
+								$.get('{% url "statistics" "COMMIT" %}', function(data){
 								draw = modify_chart(data, "By commit", "c");
 								$("#c").html(draw)
 							})
 							}
 							if ($("#ts").text() == ""){
 
-								$.get('{% url statistics "TARGET_SYS" %}', function(data){
+								$.get('{% url "statistics" "TARGET_SYS" %}', function(data){
 								draw = modify_chart(data, "By target system", "ts");
 								$("#ts").html(draw)
 							})
 							}
 							if ($("#hd").text() == ""){
 
-								$.get('{% url statistics "NATIVELSBSTRING" %}', function(data){
+								$.get('{% url "statistics" "NATIVELSBSTRING" %}', function(data){
 								draw = modify_chart(data, "By host distro", "hd");
 								$("#hd").html(draw)
 							})

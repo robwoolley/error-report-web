@@ -316,58 +316,58 @@
 					<tbody>
 					{%for detail in details %}
 						<tr class="data">
-							<td class="submitted_on"> <a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
-							<td class="recipe"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE }}</a>
+							<td class="submitted_on"> <a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
+							<td class="recipe"><a href="{% url "id" detail.id details.number items d %}">{{ detail.RECIPE }}</a>
 								{% if "RECIPE" not in filter_string and detail.RECIPE|add:":RECIPE"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.RECIPE}}:RECIPE'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.RECIPE}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="recipe_version"><a href="{% url id detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
-							<td class="task"><a href="{% url id detail.id details.number items d %}">{{ detail.TASK }}</a>
+							<td class="recipe_version"><a href="{% url "id" detail.id details.number items d %}">{{ detail.RECIPE_VERSION }}</a></td>
+							<td class="task"><a href="{% url "id" detail.id details.number items d %}">{{ detail.TASK }}</a>
 								{% if "TASK" not in filter_string and detail.TASK|add:":TASK"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.TASK}}:TASK'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.TASK}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="machine"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a>
+							<td class="machine"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.MACHINE }}</a>
 								{% if "MACHINE" not in filter_string and detail.BUILD.MACHINE|add:":MACHINE"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.MACHINE}}:MACHINE'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.MACHINE}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="distro"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a>
+							<td class="distro"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.DISTRO }}</a>
 								{% if "DISTRO" not in filter_string and detail.BUILD.DISTRO|add:":DISTRO"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.DISTRO}}:DISTRO'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.DISTRO}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="build_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a>
+							<td class="build_sys"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.BUILD_SYS }}</a>
 								{% if "BUILD_SYS" not in filter_string and detail.BUILD.BUILD_SYS|add:":BUILD_SYS"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.BUILD_SYS}}:BUILD_SYS'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.BUILD_SYS}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="target_sys"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a>
+							<td class="target_sys"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.TARGET_SYS }}</a>
 								{% if "TARGET_SYS" not in filter_string and detail.BUILD.TARGET_SYS|add:":TARGET_SYS"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.TARGET_SYS}}:TARGET_SYS'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.TARGET_SYS}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="nativelsbstring"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a>
+							<td class="nativelsbstring"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.NATIVELSBSTRING }}</a>
 								{% if "NATIVELSBSTRING" not in filter_string and detail.BUILD.NATIVELSBSTRING|add:":NATIVELSBSTRING"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.NATIVELSBSTRING}}:NATIVELSBSTRING'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.NATIVELSBSTRING}}"></i>
 									</a>
 								{%endif%}
 							</td>
-							<td class="branch"><a href="{% url id detail.id details.number items d %}">{{detail.BUILD.BRANCH}}</a>
+							<td class="branch"><a href="{% url "id" detail.id details.number items d %}">{{detail.BUILD.BRANCH}}</a>
 								{% if "BRANCH" not in filter_string and detail.BUILD.BRANCH|add:":BRANCH"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.BRANCH}}:BRANCH'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.BRANCH}}"></i>
@@ -379,7 +379,7 @@
 								<div class="btn" rel="popover"
 									data-content='
 										&lt;div&gt; {{ detail.BUILD.COMMIT|escape}}&lt;/div&gt;
-										&lt;p&gt;&lt;a href="{% url entry_args %}?items=25&page=1&query={{detail.BUILD.COMMIT}}"&gt;Search by commit&lt;/a&gt;
+										&lt;p&gt;&lt;a href="{% url "entry_args" %}?items=25&page=1&query={{detail.BUILD.COMMIT}}"&gt;Search by commit&lt;/a&gt;
 										{% if "COMMIT" not in filter_string and detail.BUILD.COMMIT|add:":COMMIT"|can_be_filter:non_filtered_details %}
 											|&lt;a href=javascript:FilterByCommit("{{detail.BUILD.COMMIT}}:COMMIT")&gt;Filter by commit&lt;/a&gt;
 										{% endif %}
@@ -392,7 +392,7 @@
 									{{ detail.BUILD.COMMIT|truncatechars:10}}
 								</div>
 							</td>
-							<td class="submitter"><a href="{% url id detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a>
+							<td class="submitter"><a href="{% url "id" detail.id details.number items d %}">{{ detail.BUILD.NAME }} </a>
 								{% if "NAME" not in filter_string and detail.BUILD.NAME|add:":NAME"|can_be_filter:non_filtered_details%}
 									<a href="javascript:reload_params({'filter': '{{detail.BUILD.NAME}}:NAME'})">
 										<i  class="icon-filter hover" title="Filter by {{detail.BUILD.NAME}}"></i>

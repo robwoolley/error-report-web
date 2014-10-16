@@ -8,9 +8,9 @@
 		<div class="row-fluid">
 		{% if latest %}
 			<ul class="nav nav-pills">
-				<li> <a href="{% url latest_errors %}?items=25&page=1&query=all_latest" >Latest errors</a> </li>
-				<li class="active"> <a href="{% url latest_errors %}?items=25&page=1&query=autobuilder_latest" >Latest Autobuilder errors</a></li>
-				<li> <a href="{% url main %}" >Statistics </a> </li>
+				<li> <a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest" >Latest errors</a> </li>
+				<li class="active"> <a href="{% url "latest_errors" %}?items=25&page=1&query=autobuilder_latest" >Latest Autobuilder errors</a></li>
+				<li> <a href="{% url "main" %}" >Statistics </a> </li>
 			</ul>
 			<div class="alert">
 				{% ifequal d "autobuilder" %}
@@ -18,7 +18,7 @@
 				{% else %}
 					<h3>No errors found</h3>
 				{% endifequal%}
-				<form class="no-results" action="{% url entry_args %}" method="GET">
+				<form class="no-results" action="{% url "entry_args" %}" method="GET">
 					<div class="input-append">
 						<input class="input-xxlarge" type="text" name="query" value="{{ query }}">
 						<input type="text" name="items" value=10 style="display: none;">
@@ -32,7 +32,7 @@
 				<h1>No errors found</h1>
 			</div>
 			<div class="alert">
-				<form class="no-results" action="{% url entry_args %}" method="GET">
+				<form class="no-results" action="{% url "entry_args" %}" method="GET">
 					<div class="input-append">
 						<input class="input-xxlarge" type="text" name="query" value="{{ query }}">
 						<input type="text" name="items" value=10 style="display: none;">
