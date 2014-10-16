@@ -3,247 +3,247 @@
 {% load staticfiles %}
 {% load nvd3_tags %}
 <html>
-	<body>
-		{% block content%}
+  <body>
+    {% block content%}
 
 
-		<div class="row-fluid">
-			<ul class="nav nav-pills">
-				<li><a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Latest errors</a></li>
-				<li><a href="{% url "latest_errors" %}?items=25&page=1&query=autobuilder_latest">Latest Autobuilder errors</a></li>
-				<li class="active"> <a href="#stats" data-toggle="tab">Statistics </a> </li>
-			</ul>
+    <div class="row-fluid">
+      <ul class="nav nav-pills">
+        <li><a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Latest errors</a></li>
+        <li><a href="{% url "latest_errors" %}?items=25&page=1&query=autobuilder_latest">Latest Autobuilder errors</a></li>
+        <li class="active"> <a href="#stats" data-toggle="tab">Statistics </a> </li>
+      </ul>
 
-			<div class="tab-content">
-				<div class="tab-pane active" id="stats">
+      <div class="tab-content">
+        <div class="tab-pane active" id="stats">
 
-					<p class="lead">Errors reported from 21st to 27th August 2014</p>
-					<div class="row-fluid">
-					<ul class="thumbnails">
-						<li class="span6">
-							<h2>By machine</h2>
-							<div class="thumbnail">
-								<p style="display:none">{% load_chart charttype chartdata "m"%}</p>
-								{% include_container "m" %}
-							</div>
-						</li>
-						<li class="span6">
-							<h2>By recipe</h2>
-							<div class="thumbnail">
-								<p style="display:none">{% load_chart charttype chartdata "r"%}</p>
-								{% include_container "r" %}
-							</div>
-						</li>
-					</ul>
-					</div>
-					<div class="row-fluid">
-						<ul class="thumbnails">
-							<li class="span6">
-								<h2>By target</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "t"%}</p>
-									{% include_container "t" %}
-								</div>
-							</li>
-							<li class="span6">
-								<h2>By distro</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "d"%}</p>
-									{% include_container "d" %}
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="row-fluid">
-						<ul class="thumbnails">
-							<li class="span6">
-								<h2>By branch</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "b"%}</p>
-									{% include_container "b" %}
-								</div>
-							</li>
-							<li class="span6">
-								<h2>By commit</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "c"%}</p>
-									{% include_container "c" %}
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="row-fluid">
-						<ul class="thumbnails">
-							<li class="span6">
-								<h2>By target system</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "ts"%}</p>
-									{% include_container "ts" %}
-								</div>
-							</li>
-							<li class="span6">
-								<h2>By host distro</h2>
-								<div class="thumbnail">
-									<p style="display:none">{% load_chart charttype chartdata "hd"%}</p>
-									{% include_container "hd" %}
-								</div>
-							</li>
-						</ul>
-					</div>
-					<script type="text/javascript">
-						$(document).ready(function() {
-							var month=new Array();
-							month[0]="January";
-							month[1]="February";
-							month[2]="March";
-							month[3]="April";
-							month[4]="May";
-							month[5]="June";
-							month[6]="July";
-							month[7]="August";
-							month[8]="September";
-							month[9]="October";
-							month[10]="November";
-							month[11]="December";
+          <p class="lead">Errors reported from 21st to 27th August 2014</p>
+          <div class="row-fluid">
+            <ul class="thumbnails">
+              <li class="span6">
+                <h2>By machine</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "m"%}</p>
+                  {% include_container "m" %}
+                </div>
+              </li>
+              <li class="span6">
+                <h2>By recipe</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "r"%}</p>
+                  {% include_container "r" %}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="row-fluid">
+            <ul class="thumbnails">
+              <li class="span6">
+                <h2>By target</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "t"%}</p>
+                  {% include_container "t" %}
+                </div>
+              </li>
+              <li class="span6">
+                <h2>By distro</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "d"%}</p>
+                  {% include_container "d" %}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="row-fluid">
+            <ul class="thumbnails">
+              <li class="span6">
+                <h2>By branch</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "b"%}</p>
+                  {% include_container "b" %}
+                </div>
+              </li>
+              <li class="span6">
+                <h2>By commit</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "c"%}</p>
+                  {% include_container "c" %}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="row-fluid">
+            <ul class="thumbnails">
+              <li class="span6">
+                <h2>By target system</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "ts"%}</p>
+                  {% include_container "ts" %}
+                </div>
+              </li>
+              <li class="span6">
+                <h2>By host distro</h2>
+                <div class="thumbnail">
+                  <p style="display:none">{% load_chart charttype chartdata "hd"%}</p>
+                  {% include_container "hd" %}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <script type="text/javascript">
+            $(document).ready(function() {
+              var month=new Array();
+              month[0]="January";
+              month[1]="February";
+              month[2]="March";
+              month[3]="April";
+              month[4]="May";
+              month[5]="June";
+              month[6]="July";
+              month[7]="August";
+              month[8]="September";
+              month[9]="October";
+              month[10]="November";
+              month[11]="December";
 
-							var today = new Date();
-							var dd = today.getDate();
-							var mm = today.getMonth();
-							var yyyy = today.getFullYear();
-							var currentm = month[mm];
-							var ind = "";
+              var today = new Date();
+              var dd = today.getDate();
+              var mm = today.getMonth();
+              var yyyy = today.getFullYear();
+              var currentm = month[mm];
+              var ind = "";
 
-							if (mm == 0){
-								var lastm = month[11];
-							}
-							else {
-								var lastm = month[mm-1];
-							}
-							if (dd > 9){
-								var lastd = dd % 10;
-							}
-							else {
-								var lastd=dd;
-							}
-							if (dd == 11 || dd == 12 || dd == 13){
-								ind = 'th'}
-							else if (lastd == 1){
-								ind = 'st'}
-							else if (lastd == 2){
-								ind = 'nd'}
-							else if (lastd == 3){
-								ind = 'rd'}
-							else if (ind == ""){
-								ind ='th'}
-							var today = dd + ind +" " + currentm + " " + yyyy;
+              if (mm == 0){
+                var lastm = month[11];
+              }
+              else {
+                var lastm = month[mm-1];
+              }
+              if (dd > 9){
+                var lastd = dd % 10;
+              }
+              else {
+                var lastd=dd;
+              }
+              if (dd == 11 || dd == 12 || dd == 13){
+                ind = 'th'}
+              else if (lastd == 1){
+                ind = 'st'}
+              else if (lastd == 2){
+                ind = 'nd'}
+              else if (lastd == 3){
+                ind = 'rd'}
+              else if (ind == ""){
+                ind ='th'}
+              var today = dd + ind +" " + currentm + " " + yyyy;
 
-							dd -= 7;
+              dd -= 7;
 
-							if (dd <= 0) {
-								dd = 28;
-								ind = 'th' + ' ' + lastm;
-							} else {
-								if (dd == 11 || dd == 12 || dd == 13){
-									ind = 'th'}
-								else if (lastd == 1){
-									ind = 'st'}
-								else if (lastd == 2){
-									ind = 'nd'}
-								else if (lastd == 3){
-									ind = 'rd'}
-								else if (ind == ""){
-									ind ='th'}
-							}
+              if (dd <= 0) {
+                dd = 28;
+                ind = 'th' + ' ' + lastm;
+              } else {
+                if (dd == 11 || dd == 12 || dd == 13){
+                  ind = 'th'}
+                else if (lastd == 1){
+                  ind = 'st'}
+                else if (lastd == 2){
+                  ind = 'nd'}
+                else if (lastd == 3){
+                  ind = 'rd'}
+                else if (ind == ""){
+                  ind ='th'}
+              }
 
-							var last = dd + ind;
-							var text = "Errors reported from " + last + " to " +today;
-							$("p").text(text);
+              var last = dd + ind;
+              var text = "Errors reported from " + last + " to " +today;
+              $("p").text(text);
 
-							function modify_chart(data, type, div){
-								var start = '<script type="text/javascript">'
-								var end='</li>'
-								var current_index = data.indexOf(type)
-								var current_part = data.substr(current_index)
-								current_part = current_part.replace('width:600px;', '')
-								var i = current_part.indexOf(start)
-								var current_part = current_part.substr(i)
-								var i = current_part.indexOf(start)
-								var current_part = current_part.substr(i)
-								var j = current_part.indexOf(end)
-								var draw = current_part.substr(i, j)
-								draw=draw.replace('<div id="m"', '<div id="' + div + '"')
-								draw=draw.replace("('#m svg')", "('#" + div + " svg')")
-								draw = draw.replace("chart.xAxis", "chart.xAxis.tickFormat(function(d){ if (d.length <= 9) return String(d); else return String(d.substring(0,8) + '...'); });")
-								draw = draw.replace("chart.yAxis", "chart.yAxis.tickFormat(d3.format('%'));")
-								draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
-								draw = draw.replace("'<center><b>'+key+'</b></center>' + y + ' at '", "parseInt(graph.point.y*100)+'% '")
-								draw = draw.replace("return tooltip_str;", "d3.selectAll('.discreteBar').on('click', function(){ if(String(graph.point.x) != 'others')  window.location.href='{% url "entry_args" %}?items=10&page=1&query='+String(graph.point.x) }); \n return tooltip_str;\n")
-								draw = draw.replace("return chart;", "nv.utils.windowResize(chart.update); \n return chart;\n")
-								return draw;
-							}
+              function modify_chart(data, type, div){
+                var start = '<script type="text/javascript">'
+                  var end='</li>'
+                  var current_index = data.indexOf(type)
+                  var current_part = data.substr(current_index)
+                  current_part = current_part.replace('width:600px;', '')
+                  var i = current_part.indexOf(start)
+                  var current_part = current_part.substr(i)
+                  var i = current_part.indexOf(start)
+                  var current_part = current_part.substr(i)
+                  var j = current_part.indexOf(end)
+                  var draw = current_part.substr(i, j)
+                  draw=draw.replace('<div id="m"', '<div id="' + div + '"')
+                  draw=draw.replace("('#m svg')", "('#" + div + " svg')")
+                  draw = draw.replace("chart.xAxis", "chart.xAxis.tickFormat(function(d){ if (d.length <= 9) return String(d); else return String(d.substring(0,8) + '...'); });")
+                  draw = draw.replace("chart.yAxis", "chart.yAxis.tickFormat(d3.format('%'));")
+                  draw = draw.replace("String(graph.point.y)", "String(graph.point.y*100)")
+                  draw = draw.replace("'<center><b>'+key+'</b></center>' + y + ' at '", "parseInt(graph.point.y*100)+'% '")
+                  draw = draw.replace("return tooltip_str;", "d3.selectAll('.discreteBar').on('click', function(){ if(String(graph.point.x) != 'others')  window.location.href='{% url "entry_args" %}?items=10&page=1&query='+String(graph.point.x) }); \n return tooltip_str;\n")
+                  draw = draw.replace("return chart;", "nv.utils.windowResize(chart.update); \n return chart;\n")
+                  return draw;
+              }
 
-							if ($("#m").text() == ""){
-								$.get('{% url "statistics" "MACHINE" %}', function(data){
-								draw = modify_chart(data, "By machine", "m");
-								$("#m").html(draw);
-							})
-							}
-							if ($("#r").text() == ""){
+              if ($("#m").text() == ""){
+                $.get('{% url "statistics" "MACHINE" %}', function(data){
+                  draw = modify_chart(data, "By machine", "m");
+                  $("#m").html(draw);
+                })
+              }
+              if ($("#r").text() == ""){
 
-								$.get('{% url "statistics" "RECIPE" %}', function(data){
-								draw = modify_chart(data, "By recipe", "r");
-								$("#r").html(draw)
-							})
-							}
-							if ($("#t").text() == ""){
+                $.get('{% url "statistics" "RECIPE" %}', function(data){
+                  draw = modify_chart(data, "By recipe", "r");
+                  $("#r").html(draw)
+                })
+              }
+              if ($("#t").text() == ""){
 
-								$.get('{% url "statistics" "TARGET" %}', function(data){
-								draw = modify_chart(data, "By target", "t");
-								$("#t").html(draw)
-							})
-							}
-							if ($("#d").text() == ""){
+                $.get('{% url "statistics" "TARGET" %}', function(data){
+                  draw = modify_chart(data, "By target", "t");
+                  $("#t").html(draw)
+                })
+              }
+              if ($("#d").text() == ""){
 
-								$.get('{% url "statistics" "DISTRO" %}', function(data){
-								draw = modify_chart(data, "By distro", "d");
-								$("#d").html(draw)
-							})
-							}
-							if ($("#b").text() == ""){
+                $.get('{% url "statistics" "DISTRO" %}', function(data){
+                  draw = modify_chart(data, "By distro", "d");
+                  $("#d").html(draw)
+                })
+              }
+              if ($("#b").text() == ""){
 
-								$.get('{% url "statistics" "BRANCH" %}', function(data){
-								draw = modify_chart(data, "By branch", "b");
-								$("#b").html(draw)
-							})
-							}
-							if ($("#c").text() == ""){
+                $.get('{% url "statistics" "BRANCH" %}', function(data){
+                  draw = modify_chart(data, "By branch", "b");
+                  $("#b").html(draw)
+                })
+              }
+              if ($("#c").text() == ""){
 
-								$.get('{% url "statistics" "COMMIT" %}', function(data){
-								draw = modify_chart(data, "By commit", "c");
-								$("#c").html(draw)
-							})
-							}
-							if ($("#ts").text() == ""){
+                $.get('{% url "statistics" "COMMIT" %}', function(data){
+                  draw = modify_chart(data, "By commit", "c");
+                  $("#c").html(draw)
+                })
+              }
+              if ($("#ts").text() == ""){
 
-								$.get('{% url "statistics" "TARGET_SYS" %}', function(data){
-								draw = modify_chart(data, "By target system", "ts");
-								$("#ts").html(draw)
-							})
-							}
-							if ($("#hd").text() == ""){
+                $.get('{% url "statistics" "TARGET_SYS" %}', function(data){
+                  draw = modify_chart(data, "By target system", "ts");
+                  $("#ts").html(draw)
+                })
+              }
+              if ($("#hd").text() == ""){
 
-								$.get('{% url "statistics" "NATIVELSBSTRING" %}', function(data){
-								draw = modify_chart(data, "By host distro", "hd");
-								$("#hd").html(draw)
-							})
-							}
-					})
-					</script>
+                $.get('{% url "statistics" "NATIVELSBSTRING" %}', function(data){
+                  draw = modify_chart(data, "By host distro", "hd");
+                  $("#hd").html(draw)
+                })
+              }
+            })
+          </script>
 
-				</div>
-			</div>   <!-- end of tab-content -->
+        </div>
+      </div>   <!-- end of tab-content -->
 
-		</div>	<!-- end of row-fluid -->
-		{% endblock %}
-	</body>
+    </div>	<!-- end of row-fluid -->
+    {% endblock %}
+  </body>
 </html>
