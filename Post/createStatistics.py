@@ -12,6 +12,7 @@ from Post.models import Build, BuildFailure
 from django.db.models import Count
 import re
 from datetime import datetime, timedelta
+from django import utils
 
 class Statistics:
 
@@ -37,7 +38,7 @@ class Statistics:
         return statistic_dict
 
     def chart_statistics(self, string):
-        startdate = datetime.now()
+        startdate = utils.timezone.now()
         enddate = startdate - timedelta(days=30)
         if string == "DATE":
             date = Build.objects.filter(DATE__range=[enddate, startdate]).values('DATE').annotate(dcount=Count('DATE'))
