@@ -27,6 +27,4 @@ urlpatterns = patterns('',
     url(r'^Errors/ErrorPage/$', TemplateView.as_view(template_name="error-page.html"), name ="errorpage"),
     url(r'^ClientPost/', 'Post.views.addData'),
     url(r'^Errors/', TemplateView.as_view(template_name="home.html"), name = "main"),
-    url(r'.*', RedirectView.as_view(url="/Errors/Search/Latest/?items=25&page=1&query=all_latest")),
-
 )
