@@ -1,0 +1,26 @@
+<div id="{{ chart_id }}"><svg style="height:400px;"></svg></div>
+<script type="text/javascript">
+
+var data_{{ chart_id }}=JSON.parse("{{ data|escapejs }}");
+
+nv.addGraph(function() {
+   var chart = nv.models.discreteBarChart();
+
+   chart.staggerLabels(true);
+   chart.yAxis.tickFormat(d3.format(',.0f'));
+   /* Ellipsize long labels */
+   chart.xAxis.tickFormat(function(label) {
+     if (label.length >= 15)
+       return label.substring(0,14) + '…';
+
+     return label
+   });
+
+   d3.select('#{{ chart_id }} svg')
+   .datum(data_{{ chart_id }})
+   .transition(350)
+   .attr('height', 400)
+   .call(chart);
+
+ });
+</script>

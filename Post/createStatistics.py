@@ -16,67 +16,47 @@ from django import utils
 
 class Statistics:
 
-    def create_statistic(self, itemList, field):
-        names = []
-        total = []
-        statistic_dict = {}
-        i=0
-        for e in itemList:
-            values=[]
-            for itemValue in e.values():
-                values.append(itemValue)
-            try:
-                t = int(values[1])
-                name = values[0]
-            except ValueError:
-                t = int(values[0])
-                name = values[1]
-            total.append(t)
-            names.append(name)
-        statistic_dict["names"] = names
-        statistic_dict["values"] = total
-        return statistic_dict
-
     def chart_statistics(self, string):
         startdate = utils.timezone.now()
         enddate = startdate - timedelta(days=30)
         if string == "DATE":
-            date = Build.objects.filter(DATE__range=[enddate, startdate]).values('DATE').annotate(dcount=Count('DATE'))
+            date = Build.objects.filter(DATE__range=[enddate, startdate]).values('DATE').annotate(dcount=Count('DATE'))[:10]
             items = list(date)
-            return self.create_statistic(items, "DATE")
+            return items
         if string == "MACHINE":
-            machines = Build.objects.filter(DATE__range=[enddate, startdate]).values('MACHINE').annotate(dcount=Count('MACHINE'))
+            machines = Build.objects.filter(DATE__range=[enddate, startdate]).values('MACHINE').annotate(dcount=Count('MACHINE')).order_by('-dcount')[:10]
             items = list(machines)
-            return self.create_statistic(items, "MACHINE")
+            return items
         elif string == "BRANCH":
-            branch = Build.objects.filter(DATE__range=[enddate, startdate]).values('BRANCH').annotate(dcount=Count('BRANCH'))
+            branch = Build.objects.filter(DATE__range=[enddate, startdate]).values('BRANCH').annotate(dcount=Count('BRANCH')).order_by('-dcount')[:10]
             items = list(branch)
-            return self.create_statistic(items, "BRANCH")
+            return items
         elif string == "COMMIT":
-            branch = Build.objects.filter(DATE__range=[enddate, startdate]).values('COMMIT').annotate(dcount=Count('COMMIT'))
+            branch = Build.objects.filter(DATE__range=[enddate, startdate]).values('COMMIT').annotate(dcount=Count('COMMIT')).order_by('-dcount')[:10]
             items = list(branch)
-            return self.create_statistic(items, "COMMIT")
+            return items
         elif string == "TARGET":
-            images = Build.objects.filter(DATE__range=[enddate, startdate]).values('TARGET').annotate(dcount=Count('TARGET'))
+            images = Build.objects.filter(DATE__range=[enddate, startdate]).values('TARGET').annotate(dcount=Count('TARGET')).order_by('-dcount')[:10]
             items = list(images)
-            return self.create_statistic(items, "TARGET")
+            return items
         elif string == "RECIPE":
-            errors = BuildFailure.objects.filter(BUILD__DATE__range=[enddate, startdate]).values('RECIPE').annotate(dcount=Count('RECIPE'))
+            errors = BuildFailure.objects.filter(BUILD__DATE__range=[enddate, startdate]).values('RECIPE').annotate(dcount=Count('RECIPE')).order_by('-dcount')[:10]
             items = list(errors)
-            return self.create_statistic(items, "RECIPE")
+            return items
         elif string =="DISTRO":
-            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('DISTRO').annotate(dcount=Count('DISTRO'))
+            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('DISTRO').annotate(dcount=Count('DISTRO')).order_by('-dcount')[:10]
             items = list(errors)
-            return self.create_statistic(items, "DISTRO")
+            return items
         elif string == "NATIVELSBSTRING":
-            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('NATIVELSBSTRING').annotate(dcount=Count('NATIVELSBSTRING'))
+            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('NATIVELSBSTRING').annotate(dcount=Count('NATIVELSBSTRING')).order_by('-dcount')[:10]
             items = list(errors)
-            return self.create_statistic(items, "NATIVELSBSTRING")
+            return items;
         elif string == "TARGET_SYS":
-            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('TARGET_SYS').annotate(dcount=Count('TARGET_SYS'))
+            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('TARGET_SYS').annotate(dcount=Count('TARGET_SYS')).order_by('-dcount')[:10]
             items = list(errors)
-            return self.create_statistic(items, "TARGET_SYS")
+            return items
         elif string == "BUILD_SYS":
-            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('BUILD_SYS').annotate(dcount=Count('BUILD_SYS'))
+            errors = Build.objects.filter(DATE__range=[enddate, startdate]).values('BUILD_SYS').annotate(dcount=Count('BUILD_SYS')).order_by('-dcount')[:10]
             items = list(errors)
+            return items
         return {}

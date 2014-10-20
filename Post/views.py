@@ -257,46 +257,24 @@ def searchDetails(request, template_name, pk, page = None, query = None, items =
     c = RequestContext(request,  {'details' : build_failure, 'page' : page, 'query' : query, 'items' : items})
     return HttpResponse(template.render(c))
 
+@csrf_exempt
 def chart(request, template_name, key):
     data=""
     s = Statistics()
     alldata = s.chart_statistics(key)
     if (alldata == {}):
-        return render_to_response(template_name, {'nochart':'No entry.'}, context_instance=RequestContext(request))
+        return HttpResponse("")
 
-    xdata=alldata["names"]
-    ydata=alldata["values"]
+    data = json.dumps([{ 'values': list(alldata)}])
+    # Replace MACHINE with x and dcount with value
+    # We do this in the string as it's more efficient
+    data = data.replace(key, "x")
+    data = data.replace("dcount", "y")
 
-    dict_chart = {}
-    for i in range(len(xdata)):
-        dict_chart[xdata[i]] = ydata[i]
-    dict_chart = OrderedDict(sorted(dict_chart.iteritems(), key=lambda (k,v): (v,k), reverse = True))
-    xdata = dict_chart.keys()
-    ydata = dict_chart.values()
+    context = { 'data' : data,
+               'chart_id': key,
+              }
 
-    total = 0
-    for i in range(len(ydata)):
-        total += ydata[i]
-    for i in range(len(ydata)):
-        ydata[i] = ydata[i]/total
-
-    if len(xdata) > 9:
-        for i in range(9, len(xdata)):
-            ydata[8] += ydata[i]
-        for i in range(9, len(ydata)):
-            ydata.pop()
-            xdata.pop()
-        xdata[8] = "others"
-
-    extra_serie = {"tooltip": {"y_start": "", "y_end": "%"}}
-
-    chartdata = {
-        'x': xdata,
-        'y1': ydata, 'extra1': extra_serie,}
-
-    charttype = "discreteBarChart"
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata}
-
-    return render_to_response(template_name, data, context_instance=RequestContext(request))
+    return render_to_response("discretebarchart.html",
+                              context,
+                              RequestContext(request))
