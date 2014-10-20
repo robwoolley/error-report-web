@@ -1,10 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% load staticfiles %}
-<!DOCTYPE html>
-<html>
-	<body>
-		{% block content %}
+{% block content %}
 			<div class="row-fluid">
 				<div class="page-header">
 					<a class="btn pull-left" style="margin-top:7px;" href="{% url "entry_args" %}?page={{ page }}&query={{ query }}&items={{ items }}">
@@ -70,6 +65,4 @@
 					$('.commit > div').popover({placement:'left'})
 				});
 		    </script>
-        {% endblock %}
-	</body>
-</html>
+{% endblock %}

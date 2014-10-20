@@ -1,12 +1,7 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% load staticfiles %}
 {% load projecttags %}
-<!DOCTYPE html>
-<html>
-	<body>
-		{% block content %}
-		<script>$
+{% block content %}
+		<script>
 
     function reload_params(params) {
         uri = window.location.href;
@@ -513,6 +508,4 @@
 				$("th .btn-mini").tooltip({ container: 'body', html: true, title:'Clear filter' });
 			});
 		</script>
-		{% endblock %}
-	</body>
-</html>
+{% endblock %}

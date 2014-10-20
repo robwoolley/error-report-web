@@ -1,12 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% load staticfiles %}
-{% load nvd3_tags %}
-<html>
-  <body>
-    {% block content%}
-
-
+{% block content %}
     <div class="row-fluid">
       <ul class="nav nav-pills">
         <li><a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Latest errors</a></li>
@@ -116,6 +109,4 @@
       </div>   <!-- end of tab-content -->
 
     </div>	<!-- end of row-fluid -->
-    {% endblock %}
-  </body>
-</html>
+{% endblock %}
