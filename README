@@ -9,24 +9,29 @@ Setup
 
 Requirements:
 
-* Django 1.4.1. The application was tested with Django 1.4.1 but it may work on a newer version.
-* Database server conigured and running. Django will create the database used by the application.
-* django-registration (0.8) module;
-* django-nvd3 0.1.11;
-* python-nvd3 0.6.0;
+* Django 1.6
+* django-registration 0.8
+
+Additional if using mysql backend:
+
+* MySQL-python
+* libmysqlclient-dev
+
+Recommended:
+* virtualenv environment
 
 Setup instructions:
 
-1. Create a database and in your Django project configure the settings.py file to access the database.
-2. In order to synchronize the database with the Django model, you must run the command: python manage.py syncdb.
-   Create an admin account in order to access the admin interface (http://127.0.0.1:8000/admin/).
-3. You can start the server by running: python manage.py runserver. Then visit http://127.0.0.1:8000/Errors/ with your browser.
-4. Create an image and if it fails, send the file to the server by running "send-error-report errors_fileName".
-5. You can modify the html templates from the templates directory.
+1. Install the dependencies via `pip install -r requirements.txt`
+2. Set DATABASES.default.ENGINE in settings.py to use the database of your choice.
+3. Set SECRET_KEY in settings.py
+4. Setup the database schema with the Django model. Run `python manage.py syncdb`.
 
 
 Usage
 -----
+
+`python manage.py runserver`
 
 In order to send the error to the server, all you have to do is to run "send-error-report file_name" ("file_name" is the file where the errors are stored).
 Then, you will receive a link to view your entry from the graphical interface. Also you can see statistical information based on all the errors from database.
