@@ -7,28 +7,20 @@
 # Create your views here.
 from __future__ import division
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, render
-from django.views.decorators.csrf import csrf_protect
-from django.core.context_processors import csrf
+from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
-from Post.models import Build, BuildFailure
-from django.contrib.auth import authenticate
-from django.core.mail import send_mail, BadHeaderError
-import os, sys, random
+from Post.models import BuildFailure
 from parser import Parser
 from getInfo import Info
 from createStatistics import Statistics
-from django.utils import simplejson
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.sites.models import RequestSite
-from collections import OrderedDict
 
 def sort_elems(elems, ordering_string, default_orderby):
     aux = ordering_string
