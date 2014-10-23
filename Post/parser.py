@@ -18,8 +18,21 @@ class Parser:
     def __init__(self, data):
         self.data = data
 
+    # returns true if the values contain '<' char
+    # Ignore the failures field (which is an array anyway)
+    def contains_tags (self, data):
+        for key,val in data.items():
+            if key == 'failures':
+                continue
+
+            if '<' in val:
+                return True
+        return False
+
     def parse(self):
         jsondata = json.loads(self.data)
+        if self.contains_tags(jsondata) == True:
+            return
 
         MACHINE_NAME = str(jsondata['machine'])
         NATIVELSBSTRING = str(jsondata['nativelsb'])
