@@ -10,11 +10,24 @@ nv.addGraph(function() {
    chart.yAxis.tickFormat(d3.format(',.0f'));
    /* Ellipsize long labels */
    chart.xAxis.tickFormat(function(label) {
-     if (label.length >= 15)
-       return label.substring(0,14) + '…';
+     if (label.length >= 14)
+       return label.tooltip = label.substring(0,13) + '…';
 
      return label
    });
+
+   chart.tooltipContent(function(key, y, e, graph) {
+     var x = String(graph.point.x);
+     var y = String(graph.point.y);
+
+     tooltip_str = x + ": " +y;
+     d3.selectAll('.discreteBar').on('click', function() {
+       window.location.href='{% url 'errors_search' %}?filter='+x+'&type={{chart_id|lower}}';
+     });
+     return tooltip_str;
+   });
+
+   /* TODO nv.utils.windowResize(chart.update); */
 
    d3.select('#{{ chart_id }} svg')
    .datum(data_{{ chart_id }})
