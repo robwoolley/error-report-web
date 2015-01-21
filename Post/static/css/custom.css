@@ -114,3 +114,11 @@ th a, th span {
 .filter-applied {
 	background-color: #f4f5f5;
 }
+
+.filter, .sorting-arrows {
+  visibility : hidden;
+}
+
+#errors-table {
+  display: none;
+}

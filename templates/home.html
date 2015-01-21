@@ -1,12 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row-fluid">
-      <ul class="nav nav-pills">
-        <li><a href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Latest errors</a></li>
-        <li><a href="{% url "latest_errors" %}?items=25&page=1&query=autobuilder_latest">Latest Autobuilder errors</a></li>
-        <li class="active"> <a href="#stats" data-toggle="tab">Statistics </a> </li>
-      </ul>
-
       <div class="tab-content">
         <div class="tab-pane active" id="stats">
 

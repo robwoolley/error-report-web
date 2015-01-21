@@ -131,7 +131,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'registration',
+#    'registration',
     )
 
 # A sample logging configuration. The only tangible logging
@@ -163,6 +163,10 @@ LOGGING = {
     }
 }
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+  'django.contrib.auth.context_processors.auth',
+  'django.core.context_processors.request',
+)
 
 AUTH_PROFILE_MODULE = 'registration.RegistrationProfile'
 

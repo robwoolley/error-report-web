@@ -8,7 +8,7 @@
 from __future__ import division
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
@@ -18,9 +18,19 @@ from parser import Parser
 from getInfo import Info
 from createStatistics import Statistics
 import json
+import datetime
+import urllib
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.sites.models import RequestSite
+from django.http import JsonResponse
+
+#TODO remove unused imports
+
+class results_mode():
+    LATEST = 0
+    AUTOBUILDER = 1
+    SEARCH = 2
 
 def sort_elems(elems, ordering_string, default_orderby):
     aux = ordering_string
@@ -96,158 +106,148 @@ def addData(request):
 def returnUrl(request, page, query):
     return HttpResponse(request.get_full_path())
 
-def viewEntry(request,template_name, page=None, query=None):
-    return HttpResponseRedirect(reverse('entry', args=(), kwargs={"items":10, "page":page, "query":query}))
+    return response
 
-@csrf_exempt
-def search(request, template_name, items = None, page = None, query = None, orderby = None, filter = None):
-    if items == None and page == None and query == None:
-         page = request.GET.get('page', '')
-         query = request.GET.get('query', '')
-         items = request.GET.get('items', '')
-         orderby = request.GET.get('orderby', '')
-         filter_string = request.GET.get('filter', '')
+def apply_filter(context, items, name, value):
+    # Look up the field name for filtering
+    # e.g. filter_pair = (RECIPE, value)
+    for col in context['tablecols']:
+      if col['clclass'] == name:
+        filter_pair = (col['field'], value)
 
-    default_orderby = 'submitted_on:+';
+    items = items.filter(filter_pair)
+    return items
 
-    # can't filter and order by the same column
-    if orderby:
-        orderby_column, order = orderby.split(':')
-        if filter_string and orderby_column.upper() in filter_string:
-            orderby = ""
+def search(request, mode=results_mode.LATEST):
+    # Default page limit
+    limit = 25
 
-    if orderby == "":
-        get_values = request.GET.copy()
-        get_values['orderby'] = default_orderby
-        request.GET = get_values
+    items = BuildFailure.objects.all()
 
-    latest = False
-    if "latest" in query:
-         latest = True
-         query = query.replace("_latest", "")
+    if request.GET.has_key("limit"):
+        request.session['limit'] = request.GET['limit']
 
-    if query == "" or query.isspace():
-        query = "all"
-    (elems, non_filtered_elems) = Info().getSearchResult(query.strip(), filter_string)
-    elems = sort_elems(elems, orderby, default_orderby)
-    no = len(elems)
-    if no == 0:
-        return render_to_response("error-page.html", {"latest" : latest,  "query" : query}, RequestContext(request))
+    if request.session.has_key('limit'):
+        limit = request.session['limit']
 
-    if latest is True:
-        if no > 150:
-            elems = elems[:150]
-            no = 150
-
-    paginator = Paginator(elems, items)
-    try:
-        c = paginator.page(page)
-    except PageNotAnInteger:
-        c = paginator.page(1)
-    except EmptyPage:
-        c=paginator.page(paginator.num_pages)
-
-    if c.number <= 3:
-        index = 0
-        end = 5
-    elif paginator.num_pages - paginator.page_range.index(c.number) <= 2:
-        diff = paginator.num_pages - paginator.page_range.index(c.number)
-        index = paginator.page_range.index(c.number) - 5 + diff
-        if index < 0:
-            index = 0
-        end = paginator.page_range.index(c.number) + diff
+    if request.GET.has_key("order_by"):
+        order_by = request.GET['order_by']
     else:
-        index = paginator.page_range.index(c.number) - 2
-        end = index + 5
+        order_by = '-id'
 
     context = {
-        'details':c,
-        'non_filtered_details' : non_filtered_elems,
-        'd' : query,
-        "no" : no,
-        'list' : paginator.page_range[index:end],
-        'items' : items,
-        'orderby': orderby,
-        'default_orderby' : default_orderby,
-        'filter_string' : filter_string,
-        'objectname' : 'errors',
         'tablecols' : [
         {'name': 'Submitted on',
-         'orderfield': _get_toggle_order(request, "submitted_on", True),      # adds ordering by the field value;
-         'ordericon':_get_toggle_order_icon(request, "submitted_on"),
+         'clclass' : 'submitted_on',
+         'field' : 'BUILD__DATE',
         },
         {'name': 'Recipe',
-         'filter': 'RECIPE',
-         'orderfield': _get_toggle_order(request, "recipe", False),
-         'ordericon':_get_toggle_order_icon(request, "recipe"),
+         'clclass' : 'recipe',
+         'field' : 'RECIPE',
         },
         {'name': 'Recipe version',
          'clclass': 'recipe_version',
+         'field' : 'RECIPE_VERSION',
         },
         {'name': 'Task',
-         'filter': 'TASK',
-         'orderfield': _get_toggle_order(request, "task", False),
-         'ordericon':_get_toggle_order_icon(request, "task"),
+         'clclass': 'task',
+         'field' : 'TASK',
         },
         {'name': 'Machine',
-         'filter': 'MACHINE',
-         'orderfield': _get_toggle_order(request, "machine", False),
-         'ordericon':_get_toggle_order_icon(request, "machine"),
+         'clclass': 'machine',
+         'field': 'BUILD__MACHINE',
         },
         {'name': 'Distro',
-         'filter': 'DISTRO',
-         'orderfield': _get_toggle_order(request, "distro", False),
-         'ordericon':_get_toggle_order_icon(request, "distro"),
+         'clclass': 'distro',
+         'field': 'BUILD__DISTRO',
         },
         {'name': 'Build system',
-         'filter': 'BUILD_SYS',
          'clclass': 'build_sys',
-         'hidden': 1,
-         'orderfield': _get_toggle_order(request, "build_sys", False),
-         'ordericon':_get_toggle_order_icon(request, "build_sys"),
+         'field': 'BUILD__BUILD_SYS',
         },
         {'name': 'Target system',
-         'filter': 'TARGET_SYS',
          'clclass': 'target_sys',
-         'hidden': 1,
-         'orderfield': _get_toggle_order(request, "target_sys", False),
-         'ordericon':_get_toggle_order_icon(request, "target_sys"),
+         'field': 'BUILD__TARGET_SYS',
         },
         {'name': 'Host distro',
-         'filter': 'NATIVELSBSTRING',
          'clclass': 'nativelsbstring',
-         'orderfield': _get_toggle_order(request, "nativelsbstring", False),
-         'ordericon':_get_toggle_order_icon(request, "nativelsbstring"),
+         'field': 'BUILD__NATIVELSBSTRING',
         },
         {'name': 'Branch',
-         'filter': 'BRANCH',
          'clclass': 'branch',
-         'orderfield': _get_toggle_order(request, "branch", False),
-         'ordericon':_get_toggle_order_icon(request, "branch"),
+         'field': 'BUILD__BRANCH',
         },
         {'name': 'Commit',
-         'filter': 'COMMIT',
          'clclass': 'commit',
+         'field': 'BUILD__COMMIT',
         },
         {'name': 'Submitter',
-         'filter': 'NAME',
          'clclass': 'submitter',
-         'hidden': 1,
-         'orderfield': _get_toggle_order(request, "submitter", False),
-         'ordericon':_get_toggle_order_icon(request, "submitter"),
+         'field': 'BUILD__NAME',
         }],
     }
 
-    return render_to_response(template_name, context, RequestContext(request))
+
+    if request.GET.has_key("filter"):
+        items = apply_filter(context, items, request.GET['type'], request.GET['filter'])
+
+    if mode == results_mode.AUTOBUILDER:
+        # Temp until we have a better way to identify
+        # autobuilder reports
+        items = items.filter(BUILD__NAME__istartswith="yocto")
+    elif mode == results_mode.SEARCH and request.GET.has_key("query"):
+        items = items.filter(ERROR_DETAILS__icontains=request.GET['query'])
 
 
-def searchDetails(request, template_name, pk, page = None, query = None, items = None):
+    # Do some special filtering to reduce the QuerySet to a manageable size
+    # reversing or ordering the whole queryset is very expensive so we use
+    # a range instead and then feed that to the paginator.
+    if mode == results_mode.LATEST and not request.GET.has_key('filter'):
+        total = items.count()
+        total_from = total - int(limit)
+        if request.GET.has_key('page'):
+          # fetch a 2 extra pages around the current page
+          total_from = total - int(limit)*(int(request.GET['page'])+2)
+
+        items = items.filter(id__range=(total_from,total))
+
+    # Make sure we get django to do an inner join on our foreign key rather
+    # than a query for each item
+    items = items.select_related("BUILD").order_by(order_by)
+
+    build_failures = Paginator(items, limit)
+
+    if request.GET.has_key('page'):
+        try:
+            build_failures = build_failures.page(request.GET['page'])
+        except EmptyPage:
+            build_failures = build_failures.page(build_failures.num_pages)
+    else:
+        build_failures = build_failures.page(1)
+
+
+    context['build_failures'] = build_failures
+
+
+    return render(request, "latest-errors.html", context)
+
+
+def details(request, template_name, fail_id):
     results=''
-    status_code = get_object_or_404(BuildFailure, pk=pk)
+    status_code = get_object_or_404(BuildFailure, pk=fail_id)
     build_failure = Info().getBFDetails(status_code.id)
-    template = loader.get_template(template_name)
-    c = RequestContext(request,  {'details' : build_failure, 'page' : page, 'query' : query, 'items' : items})
-    return HttpResponse(template.render(c))
+    #TODO Fix this not needed?
+    items = ""
+    query = ""
+    page = ""
+
+    context = {'details' : build_failure,
+               'page' : page,
+               'query' : query,
+               'items' : items
+              }
+
+    return render(request, template_name, context)
 
 @csrf_exempt
 def chart(request, template_name, key):
