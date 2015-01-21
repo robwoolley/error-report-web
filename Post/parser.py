@@ -12,6 +12,7 @@ from Post.models import Build, BuildFailure
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
+from django.core.urlresolvers import reverse
 
 class Parser:
 
@@ -29,7 +30,8 @@ class Parser:
                 return True
         return False
 
-    def parse(self):
+    def parse(self, host):
+        build_fails_logged = []
         jsondata = json.loads(self.data)
         if self.contains_tags(jsondata) == True:
             return
@@ -47,11 +49,24 @@ class Parser:
         b=Build(DATE = timezone.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
         b.save()
         failures = jsondata['failures']
+
         for fail in failures:
             if len(fail) > int(settings.MAX_UPLOAD_SIZE):
-                return -1
+                build_fails_logged.append({ 'id': -1, 'error' : "The size of the upload is too large" })
+                continue
             package = str(fail['package'])
             g = re.match(r'(.*)\-(\d.*)', package)
             f = BuildFailure(TASK = str(fail['task']), RECIPE = g.group(1), RECIPE_VERSION = g.group(2), ERROR_DETAILS = str(fail['log']), BUILD = b)
             f.save()
-        return b.id
+
+            url = 'http://' + host + reverse('details', args=[f.id])
+
+            build_fails_logged.append({ 'id' : f.id,
+                                        'url' : url,
+                                      })
+
+        result = { 'build_id' : b.id,
+                   'failures' : build_fails_logged,
+                 }
+
+        return result

@@ -94,17 +94,11 @@ def addData(request):
     if request.POST['data']:
         data = request.POST['data']
         p = Parser(data)
-        current_id = p.parse()
-        if current_id == -1:
-           response = HttpResponse("The size of the file is too big.")
-        else:
-            response = reverse_lazy('your_entry', args=( 1, current_id))
-            response = ''.join(['http://' ,RequestSite(request).domain, str(response)])
-    return HttpResponse("Your entry can be found here: " +response)
+        result = p.parse(request.META['HTTP_HOST'])
 
-@csrf_exempt
-def returnUrl(request, page, query):
-    return HttpResponse(request.get_full_path())
+        response = JsonResponse(result)
+    else:
+        response = JsonResponse({ 'error' : 'data not provided' })
 
     return response
 
