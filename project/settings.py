@@ -170,3 +170,5 @@ ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'noreply@example.com'
 LOGIN_REDIRECT_URL = '/Errors'
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
