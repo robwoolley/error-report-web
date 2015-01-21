@@ -5,3 +5,5 @@
 *.rej
 *~
 pull-*/
+venv
+*.sqlite3
