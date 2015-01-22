@@ -39,6 +39,10 @@
 								{% if "yocto-autobuilder" in detail.BUILD.NAME and "master" in detail.BUILD.BRANCH %}
 									<dd><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id={{detail.BUILD.COMMIT}}">View commit</a></dd> 
 								{% endif %}
+
+                                                        <dt>Build:</dt>
+                                                        <dd><a href="{%url 'build_errors' detail.BUILD.id %}">{{detail.BUILD.id}}</a></dd>
+
 							<dt>Submitter:</dt>
 								{% if "@" in detail.BUILD.EMAIL %}
 									<dd> <a href="mailto:{{detail.BUILD.EMAIL}}">{{detail.BUILD.EMAIL}}</a> </dd>

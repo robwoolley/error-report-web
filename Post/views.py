@@ -31,6 +31,7 @@ class results_mode():
     LATEST = 0
     AUTOBUILDER = 1
     SEARCH = 2
+    BUILD = 3
 
 def sort_elems(elems, ordering_string, default_orderby):
     aux = ordering_string
@@ -88,7 +89,7 @@ def _get_toggle_order_icon(request, orderkey):
         return ""
 
 @csrf_exempt
-def addData(request):
+def addData(request, return_json=False):
     response = ''
     if request.method == 'POST':
         # Backward compatibility with current send-error-report
@@ -101,9 +102,15 @@ def addData(request):
         p = Parser(data)
         result = p.parse(request.META['HTTP_HOST'])
 
-        response = JsonResponse(result)
+        if return_json:
+          response = JsonResponse(result)
+        else:
+          response = HttpResponse("Your entry can be found here: "+result['build_url'])
     else:
-        response = JsonResponse({ 'error' : 'data not provided' })
+        if return_json:
+          response = JsonResponse({ 'error' : 'No valid data provided' })
+        else:
+          response = HttpResponse("No valid data provided")
 
     return response
 
@@ -117,7 +124,7 @@ def apply_filter(context, items, name, value):
     items = items.filter(filter_pair)
     return items
 
-def search(request, mode=results_mode.LATEST):
+def search(request, mode=results_mode.LATEST, build_id=None):
     # Default page limit
     limit = 25
 
@@ -197,11 +204,13 @@ def search(request, mode=results_mode.LATEST):
     elif mode == results_mode.SEARCH and request.GET.has_key("query"):
         items = items.filter(ERROR_DETAILS__icontains=request.GET['query'])
 
+    elif mode == results_mode.BUILD and build_id:
+        items = items.filter(BUILD=build_id)
 
     # Do some special filtering to reduce the QuerySet to a manageable size
     # reversing or ordering the whole queryset is very expensive so we use
     # a range instead and then feed that to the paginator.
-    if mode == results_mode.LATEST and not request.GET.has_key('filter'):
+    elif mode == results_mode.LATEST and not request.GET.has_key('filter'):
         total = items.count()
         total_from = total - int(limit)
         if request.GET.has_key('page'):

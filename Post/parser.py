@@ -65,7 +65,10 @@ class Parser:
                                         'url' : url,
                                       })
 
+        build_url = 'http://' + host + reverse('build_errors', args=[b.id])
+
         result = { 'build_id' : b.id,
+                   'build_url' : build_url,
                    'failures' : build_fails_logged,
                  }
 
