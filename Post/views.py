@@ -6,87 +6,24 @@
 
 # Create your views here.
 from __future__ import division
-from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse, render
-from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext, loader
+from django.template import RequestContext
 from Post.models import BuildFailure
 from parser import Parser
-from getInfo import Info
 from createStatistics import Statistics
-import json
-import datetime
-import urllib
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse_lazy
-from django.contrib.sites.models import RequestSite
+from django.core.paginator import Paginator, EmptyPage
 from django.http import JsonResponse
-
-#TODO remove unused imports
+import json
+import urllib
 
 class results_mode():
     LATEST = 0
     AUTOBUILDER = 1
     SEARCH = 2
     BUILD = 3
-
-def sort_elems(elems, ordering_string, default_orderby):
-    aux = ordering_string
-    if ordering_string:
-        column, order = aux.split(':')
-    else:
-        column, order = default_orderby.split(':')
-    if order == '-':
-        rev = True
-    else:
-        rev = False
-
-    if column == "submitted_on":
-        elems.sort(key=lambda r : r.BUILD.DATE, reverse=not rev)
-        return elems
-    else:
-        elems.sort(key=lambda r : r.BUILD.DATE, reverse=True) # Secondary sorting criteria
-
-    if column == "machine":
-        elems.sort(key=lambda r : r.BUILD.MACHINE, reverse=rev)
-    elif column == "branch":
-        elems.sort(key=lambda r : r.BUILD.BRANCH, reverse=rev)
-    elif column == "target":
-        elems.sort(key=lambda r : r.BUILD.TARGET, reverse=rev)
-    elif column == "distro":
-        elems.sort(key=lambda r : r.BUILD.DISTRO, reverse=rev)
-    elif column == "nativelsbstring":
-        elems.sort(key=lambda r : r.BUILD.NATIVELSBSTRING, reverse=rev)
-    elif column == "build_sys":
-        elems.sort(key=lambda r : r.BUILD.BUILD_SYS, reverse=rev)
-    elif column == "target_sys":
-        elems.sort(key=lambda r : r.BUILD.TARGET_SYS, reverse=rev)
-    elif column == "submitter":
-        elems.sort(key=lambda r : r.BUILD.NAME, reverse=rev)
-    elif column == "email":
-        elems.sort(key=lambda r : r.BUILD.EMAIL, reverse=rev)
-    elif column == "task":
-        elems.sort(key=lambda r : r.TASK, reverse=rev)
-    elif column == "recipe":
-        elems.sort(key=lambda r : r.RECIPE, reverse=rev)
-    return elems
-
-def _get_toggle_order(request, orderkey, reverse = False):
-    if reverse:
-        return "%s:+" % orderkey if request.GET.get('orderby', "") == "%s:-" % orderkey else "%s:-" % orderkey
-    else:
-        return "%s:-" % orderkey if request.GET.get('orderby', "") == "%s:+" % orderkey else "%s:+" % orderkey
-
-def _get_toggle_order_icon(request, orderkey):
-    if request.GET.get('orderby', "") == "%s:+"%orderkey:
-        return "down"
-    elif request.GET.get('orderby', "") == "%s:-"%orderkey:
-        return "up"
-    else:
-        return ""
 
 @csrf_exempt
 def addData(request, return_json=False):
@@ -249,19 +186,11 @@ def search(request, mode=results_mode.LATEST, build_id=None):
 
 
 def details(request, template_name, fail_id):
-    results=''
-    status_code = get_object_or_404(BuildFailure, pk=fail_id)
-    build_failure = Info().getBFDetails(status_code.id)
-    #TODO Fix this not needed?
-    items = ""
-    query = ""
-    page = ""
 
-    context = {'details' : build_failure,
-               'page' : page,
-               'query' : query,
-               'items' : items
-              }
+    build_failure = BuildFailure.objects.filter(id=fail_id)
+    build_failure = build_failure.select_related("BUILD")
+
+    context = {'details' : build_failure }
 
     return render(request, template_name, context)
 

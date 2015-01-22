@@ -92,11 +92,6 @@ $(document).ready(function(){
 
   $(document).on('click', '.filter', _filter_clicked);
 
-  $(".popover-content a").click(function(e){
-    console.log("dog");
-    e.preventDefault();
-  });
-
   /* Toggle a column */
   $(".col-toggle").change(function(){
 
