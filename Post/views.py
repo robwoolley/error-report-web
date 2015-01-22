@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse, render
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext, loader
 from Post.models import BuildFailure
 from parser import Parser
@@ -124,6 +124,9 @@ def apply_filter(context, items, name, value):
     items = items.filter(filter_pair)
     return items
 
+def default(request):
+    return redirect(search, mode=results_mode.AUTOBUILDER)
+
 def search(request, mode=results_mode.LATEST, build_id=None):
     # Default page limit
     limit = 25
@@ -139,17 +142,19 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     if request.GET.has_key("order_by"):
         order_by = request.GET['order_by']
     else:
-        order_by = '-id'
+        order_by = '-BUILD__DATE'
 
     context = {
         'tablecols' : [
         {'name': 'Submitted on',
          'clclass' : 'submitted_on',
          'field' : 'BUILD__DATE',
+         'disable_toggle' : True,
         },
         {'name': 'Recipe',
          'clclass' : 'recipe',
          'field' : 'RECIPE',
+         'disable_toggle' : True,
         },
         {'name': 'Recipe version',
          'clclass': 'recipe_version',
@@ -158,14 +163,17 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         {'name': 'Task',
          'clclass': 'task',
          'field' : 'TASK',
+         'disable_toggle' : True,
         },
         {'name': 'Machine',
          'clclass': 'machine',
          'field': 'BUILD__MACHINE',
+         'disable_toggle' : True,
         },
         {'name': 'Distro',
          'clclass': 'distro',
          'field': 'BUILD__DISTRO',
+         'disable_toggle' : True,
         },
         {'name': 'Build system',
          'clclass': 'build_sys',

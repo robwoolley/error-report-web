@@ -80,12 +80,21 @@ $(document).ready(function(){
     window.location.search = dumpsUrlParams(search);
   });
 
-  $(".filter").click(function(e){
+  function _filter_clicked(filter, type){
     var search = parseUrlParams();
     search.filter = $(this).data('filter');
     search.type = $(this).data('type');
 
     window.location.search = dumpsUrlParams(search);
+  }
+
+  $(".filter").click(_filter_clicked);
+
+  $(document).on('click', '.filter', _filter_clicked);
+
+  $(".popover-content a").click(function(e){
+    console.log("dog");
+    e.preventDefault();
   });
 
   /* Toggle a column */
@@ -110,9 +119,6 @@ $(document).ready(function(){
   /* Display or hide table columns before showing the table */
   var cols_hidden = $.cookie("cols");
   if (cols_hidden) {
-    console.log("doing cookie func");
-    console.log ("cols_hidden:");
-    console.log (cols_hidden);
     $("#errors-table th").each(function(){
       var clclass = $(this).prop("class");
 
@@ -123,7 +129,16 @@ $(document).ready(function(){
         }
       }
     });
+  } else {
+    /* Disable these columns by default */
+    $(".submitter").hide();
+    $("#checkbox-submitter").removeAttr("checked");
+    $(".build_sys").hide();
+    $("#checkbox-build_sys").removeAttr("checked");
+    $(".target_sys").hide();
+    $("#checkbox-target_sys").removeAttr("checked");
   }
+
   $("#errors-table").show();
 
   $('.commit > div').popover({
@@ -142,19 +157,26 @@ $(document).ready(function(){
    * space allocated to the icon/link.
    */
   $("td").hover(function () {
-    $(this).children(".filter").css('visibility','visible');
+    /* If we're filtering by this then don't show the filter icon */
+    if (window.location.search.match($(this).prop('class')))
+      return;
 
+    $(this).children(".filter").css('visibility','visible');
   });
+
   $("td").mouseleave(function () {
     $(this).children(".filter").css('visibility','hidden');
   });
 
   $("th").hover(function () {
     $(this).children(".sorting-arrows").css('visibility','visible');
-
   });
 
   $("th").mouseleave(function () {
+    /* If we're sorted don't hide the sorted arrow */
+    if (($(this).children("a").hasClass("sorted")))
+      return;
+
     $(this).children(".sorting-arrows").css('visibility','hidden');
   });
 

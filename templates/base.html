@@ -27,8 +27,8 @@ Licensed under the MIT license, see COPYING.MIT for details
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand logo" href="{% url "latest_errors" %}?items=25&page=1&query=all_latest"><img src="{% static "img/logo.png" %}" /></a>
-          <a class="brand" href="{% url "latest_errors" %}?items=25&page=1&query=all_latest">Error reports</a>
+          <a class="brand logo" href="{% url "main" %}"><img src="{% static "img/logo.png" %}" /></a>
+          <a class="brand" href="{% url "main" %}">Error reports</a>
           {% comment %}
           {% if  user.is_authenticated %}
           <div class="dropdown pull-right">
@@ -52,7 +52,7 @@ Licensed under the MIT license, see COPYING.MIT for details
           {% endcomment %}
           <form class="navbar-search pull-right" action="{% url "errors_search" %}" method="GET">
             <div class="input-append">
-              <input type="text" name="query" class="span5" placeholder="Search error details" value="{{request.GET.query}}">
+              <input type="text" name="query" class="span5" placeholder="Search all errors" value="{{request.GET.query}}">
                     <button type="submit" value="Search" class="btn btn-info">Search</button>
                   </div>
                 </form>
@@ -61,21 +61,25 @@ Licensed under the MIT license, see COPYING.MIT for details
           </div>
           {% url "latest_errors" as latest_errors_url %}
           {% url "latest_autobuilder_errors" as latest_autobuilder_errors_url %}
-          {% url "main" as stats_url %}
+          {% url "statistics" as stats_url %}
 
           <div class="row-fluid">
+            {% if not request.GET.query %}
             <ul class="nav nav-pills">
+
+              <li {% if request.path  == latest_autobuilder_errors_url %}class="active"{% endif %}>
+                <a href="{{latest_autobuilder_errors_url}}">Latest Autobuilder errors</a>
+              </li>
 
               <li {% if request.path == latest_errors_url %}class="active" {%endif%}>
                 <a href="{{latest_errors_url}}">Latest errors</a>
               </li>
-              <li {% if request.path  == latest_autobuilder_errors_url %}class="active"{% endif %}>
-                <a href="{{latest_autobuilder_errors_url}}">Latest Autobuilder errors</a>
-              </li>
+
               <li {% if request.path  == stats_url %}class="active"{% endif %}>
                 <a href="{{stats_url}}">Statistics</a>
               </li>
             </ul>
+            {% endif %}
 
             {% block content %}{% endblock %}
           </body>

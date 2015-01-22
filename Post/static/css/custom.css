@@ -122,3 +122,7 @@ th a, th span {
 #errors-table {
   display: none;
 }
+
+.commit {
+  width: 140px;
+}

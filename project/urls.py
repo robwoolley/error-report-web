@@ -26,5 +26,6 @@ urlpatterns = patterns('',
     url(r'^Errors/ErrorPage/$', TemplateView.as_view(template_name="error-page.html"), name ="errorpage"),
     url(r'^(?i)ClientPost/', 'Post.views.addData'),
     url(r'^(?i)ClientPost/JSON/$', 'Post.views.addData', { 'return_json' : True }),
-    url(r'^(?i)Errors/$', TemplateView.as_view(template_name="home.html"), name = "main"),
+    url(r'^(?i)Errors/$', 'Post.views.default', name="main"),
+    url(r'^(?i)Statistics/$', TemplateView.as_view(template_name="home.html"), name = "statistics"),
 )

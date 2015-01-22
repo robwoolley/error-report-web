@@ -3,18 +3,19 @@
 {% block content %}
 
 <div class="row-fluid">
+  {% if request.GET.query %}
+  <div class="page-header"> <h1>{{build_failures.paginator.count}} errors found for "{{request.GET.query}}" {% if request.GET.filter %} filtered by "{{ request.GET.filter }}" {% endif %}</h1>
+  </div>
+    {% endif %}
+
    <div class="navbar">
     <div class="navbar-inner">
-      {% if request.GET.filter %}
-      <span class="brand"> {{build_failures.paginator.count}} error reports found filtered by "{{request.GET.type}} is {{request.GET.filter}}"</span>
-      {% endif %}
-
-      {% if request.GET.query %}
-      <span class="brand"> {{build_failures.paginator.count}} error reports found containing "{{request.GET.query}}"</span>
+      {% if request.GET.filter and not request.GET.query %}
+      <span class="brand"> {{build_failures.paginator.count}} errors found filtered by "{{request.GET.filter}}"</span>
       {% endif %}
 
       <div class="pull-right">
-        <span class="help-inline" style="padding-top:5px;">Show latest:</span>
+        <span class="help-inline" style="padding-top:5px;">Show rows:</span>
         <select style="margin-top:5px;margin-bottom:0px;" class="input-mini pagesize">
           {% with "10 25 50 100 150" as list%}
           {% for i in list.split %}
@@ -30,21 +31,20 @@
       <span class="divider-vertical pull-right"></span>
       <div class="btn-group pull-right">
 
-        {% if tablecols %}
-              <button class="btn dropdown-toggle" data-toggle="dropdown">Edit columns
-                <span class="caret"></span>
-              </button>
-              <ul id='editcol' class="dropdown-menu">
-                {% for col in tablecols %}
+        <button class="btn dropdown-toggle" data-toggle="dropdown">Edit columns
+          <span class="caret"></span>
+        </button>
+        <ul id='editcol' class="dropdown-menu">
+          {% for col in tablecols %}
                 <li>
-                  <label class="checkbox">
-                    <input type="checkbox" class="col-toggle" id="checkbox-{{col.clclass}}"  value="{{col.clclass}}" checked="checked" />
+               {# Some columns are required as minimum so disable unchecking #}
+                  <label class="checkbox {%if col.disable_toggle%}muted{%endif%}">
+                    <input type="checkbox" class="col-toggle" id="checkbox-{{col.clclass}}"  value="{{col.clclass}}" checked="checked" {%if col.disable_toggle%}disabled="disabled"{%endif%} />
                     {{col.name}}
                   </label>
                 </li>
                 {% endfor %}
               </ul>
-              {% endif %}
             </div>
           </div> <!-- navbar-inner -->
         </div>
@@ -54,26 +54,33 @@
             <!-- Table header row; generated from "tablecols" entry in the context dict -->
             <tr>
               {% for col in tablecols %}
+              {# If a filter is applied #}
               {% if  col.clclass in request.GET.type %}
-              <th class="filter-applied {{col.clclass}}" >
-                <span class="muted">
-                  {{col.name}}
-                </span>
+                <th class="filter-applied {{col.clclass}}" >
+                  <span class="muted">
+                    {{col.name}}
+                  </span>
                 &nbsp;
                 <a href="#" id="clear-filter-btn" class="btn btn-mini pull-right" title="Clear filter">&#x2716</a>
-                {% else %}
-                <th class="{{col.clclass}}">
-                  {% if request.GET.order_by == "-"|add:col.field %}
-                  <a href="#" class="sort-col" data-order-by="{{col.field}}" >{{col.name}}</a>
-                  <span class="sorting-arrows">&#9660</span>
-                     {% else %}
 
+                {% elif request.GET.order_by == col.field or request.GET.order_by == "-"|add:col.field %}
+                {# If a sort is applied #}
+                <th class="{{col.clclass}}">
+
+                  {% if request.GET.order_by == "-"|add:col.field %}
+                  <a href="#" class="sort-col sorted" data-order-by="{{col.field}}" >{{col.name}}</a>
+                  <span class="sorting-arrows" style="visibility: visible">&#9660</span>
+                  {% else %}
+                  <a href="#" class="sort-col sorted" data-order-by="-{{col.field}}" >{{col.name}}</a>
+                   <span class="sorting-arrows" style="visibility: visible">&#9650</span>
+                   {% endif %}
+                {% else %}
+                  <th >
                   <a href="#" class="sort-col" data-order-by="-{{col.field}}" >{{col.name}}</a>
-                  <span class="sorting-arrows">&#9650</span>
-                     {% endif %}
-                  </span>
-                  {% endif %}
-                </th>
+
+                   <span class="sorting-arrows">&#9660</span>
+                  </th>
+                {% endif %}
                 {%endfor%}
               </tr>
             </thead>
@@ -133,7 +140,7 @@
                   <div class="btn" rel="popover"
                       data-content='
                       {{ build_fail.BUILD.COMMIT|escape}}
-                      <p><a href="#" data-filter="{{build_fail.BUILD.COMMIT}}" data-type="commit" >Filter by commit</a>'
+                      <p><a href="#" class="filter" style="visibility: visible" data-filter="{{build_fail.BUILD.COMMIT}}" data-type="commit" >Filter by commit</a>'
                       data-html="true"
                     >
                     {{ build_fail.BUILD.COMMIT|truncatechars:10}}
@@ -156,25 +163,24 @@
             <ul>
               {%if build_failures.has_previous %}
               <li><a href="#" data-page="{{build_failures.previous_page_number}}">&laquo;</a></li>
-              <li class="disabled"><a href="#" class="muted">&hellip;</a></li>
               {%else%}
               <li class="disabled"><a href="#">&laquo;</a></li>
               {%endif%}
               {% for i in build_failures.paginator.page_range %}
               {# Show the buttons 3 either side of the current page #}
-                {% if i > build_failures.number|add:-4 and i < build_failures.number|add:4 %}
+              {% if i == build_failures.number or i < build_failures.number|add:5 and i > build_failures.number %}
                 <li {%if i == build_failures.number %} class="active" {%endif%}><a href="#" data-page="{{i}}">{{i}}</a></li>
                 {% endif %}
               {% endfor %}
               {%if build_failures.has_next%}
-              <li class="disabled"><a href="#" class="muted">&hellip;</a></li>
               <li><a href="#" data-page="{{build_failures.next_page_number}}">&raquo;</a></li>
               {%else%}
               <li class="disabled"><a href="#">&raquo;</a></li>
               {%endif%}
             </ul>
             <div class="pull-right">
-              <span class="help-inline" style="padding-top:5px;">Show latest:</span>
+              {{request.session.limit}}
+              <span class="help-inline" style="padding-top:5px;">Show rows:</span>
               <select style="margin-top:5px;margin-bottom:0px;" class="input-mini pagesize">
                 {% with "10 25 50 100 150" as list%}
                 {% for i in list.split %}
