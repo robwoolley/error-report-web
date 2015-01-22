@@ -90,9 +90,14 @@ def _get_toggle_order_icon(request, orderkey):
 @csrf_exempt
 def addData(request):
     response = ''
-    current_id = -1
-    if request.POST['data']:
-        data = request.POST['data']
+    if request.method == 'POST':
+        # Backward compatibility with current send-error-report
+        # The data is now in the request body in new django as it's
+        # understandingand the data is application/json.
+        # The json is url encoded so we need to undo this here.
+        data = request.body[len('data='):]
+        data = urllib.unquote_plus(data)
+
         p = Parser(data)
         result = p.parse(request.META['HTTP_HOST'])
 
