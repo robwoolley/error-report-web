@@ -31,14 +31,14 @@ class Parser:
 
     def parse(self, host):
         build_fails_logged = []
-        jsondata = json.loads(self.data)
-        if self.contains_tags(jsondata) == True:
-            return
 
         try:
             jsondata = json.loads(self.data)
         except:
              return  { 'error' : 'Invalid json' }
+
+        if self.contains_tags(jsondata) == True:
+            return  { 'error' : 'Invalid characters in json' }
 
         try:
             MACHINE_NAME = str(jsondata['machine'])
