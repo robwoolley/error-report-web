@@ -45,6 +45,8 @@ def addData(request, return_json=False):
         # The data is now in the request body in new django as it's
         # understandingand the data is application/json.
         # The json is url encoded so we need to undo this here.
+        # [YOCTO #7245]
+
         data = request.body[len('data='):]
         data = urllib.unquote_plus(data)
 

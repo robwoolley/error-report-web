@@ -7,11 +7,10 @@
 #
 # Licensed under the MIT license, see COPYING.MIT for details
 
-import sys, os, json, re
+import json, re
 from Post.models import Build, BuildFailure
 from django.conf import settings
 from django.utils import timezone
-from datetime import datetime
 from django.core.urlresolvers import reverse
 
 class Parser:
