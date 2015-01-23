@@ -182,7 +182,8 @@ $(document).ready(function(){
   //turn edit columns dropdown into a multi-select menu$
   $('.dropdown-menu input, .dropdown-menu label').click(function(e) {
     e.stopPropagation();
-  });$
+  });
+
   $(".icon-filter").tooltip({ container: 'body', html: true });
   // initialise the remove filter tooltips
   $("th .btn-mini").tooltip({ container: 'body', html: true, title:'Clear filter' });

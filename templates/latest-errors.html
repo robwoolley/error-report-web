@@ -51,7 +51,6 @@
         {% if build_failures.paginator.count != 0 %}
         <table class="table table-bordered table-hover" id="errors-table">
           <thead>
-            <!-- Table header row; generated from "tablecols" entry in the context dict -->
             <tr>
               {% for col in tablecols %}
               {# If a filter is applied #}
@@ -75,10 +74,18 @@
                    <span class="sorting-arrows" style="visibility: visible">&#9650</span>
                    {% endif %}
                 {% else %}
-                  <th >
+                {# default case is sorted by submitted_on #}
+
+                <th class="{{col.clclass}}">
+                  {% if col.clclass == "submitted_on" and not request.GET.order_by %}
+                   <a href="#" class="sort-col sorted" data-order-by="-{{col.field}}" >{{col.name}}</a>
+                   <span class="sorting-arrows" style="visibility: visible">&#9660</span>
+
+                  {% else %}
                   <a href="#" class="sort-col" data-order-by="-{{col.field}}" >{{col.name}}</a>
 
                    <span class="sorting-arrows">&#9660</span>
+                   {% endif %}
                   </th>
                 {% endif %}
                 {%endfor%}
