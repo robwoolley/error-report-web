@@ -175,7 +175,7 @@
               {%endif%}
               {% for i in build_failures.paginator.page_range %}
               {# Show the buttons 3 either side of the current page #}
-              {% if i == build_failures.number or i < build_failures.number|add:5 and i > build_failures.number %}
+              {% if i <= build_failures.number|add:3 and  i >= build_failures.number|add:-3 %}
                 <li {%if i == build_failures.number %} class="active" {%endif%}><a href="#" data-page="{{i}}">{{i}}</a></li>
                 {% endif %}
               {% endfor %}
@@ -186,7 +186,6 @@
               {%endif%}
             </ul>
             <div class="pull-right">
-              {{request.session.limit}}
               <span class="help-inline" style="padding-top:5px;">Show rows:</span>
               <select style="margin-top:5px;margin-bottom:0px;" class="input-mini pagesize">
                 {% with "10 25 50 100 150" as list%}
