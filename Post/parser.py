@@ -40,19 +40,22 @@ class Parser:
         except:
              return  { 'error' : 'Invalid json' }
 
-        MACHINE_NAME = str(jsondata['machine'])
-        NATIVELSBSTRING = str(jsondata['nativelsb'])
-        TARGET_SYS = str(jsondata['target_sys'])
-        BRANCH_COMMIT = str(jsondata['branch_commit'])
-        COMPONENT = str(jsondata['component'])
-        BUILD_SYS = str(jsondata['build_sys'])
-        DISTRO = str(jsondata['distro'])
-        NAME = str(jsondata['username'])
-        EMAIL = str(jsondata['email'])
-        g = re.match(r'(.*): (.*)', str(BRANCH_COMMIT))
-        b=Build(DATE = timezone.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
-        b.save()
-        failures = jsondata['failures']
+        try:
+            MACHINE_NAME = str(jsondata['machine'])
+            NATIVELSBSTRING = str(jsondata['nativelsb'])
+            TARGET_SYS = str(jsondata['target_sys'])
+            BRANCH_COMMIT = str(jsondata['branch_commit'])
+            COMPONENT = str(jsondata['component'])
+            BUILD_SYS = str(jsondata['build_sys'])
+            DISTRO = str(jsondata['distro'])
+            NAME = str(jsondata['username'])
+            EMAIL = str(jsondata['email'])
+            g = re.match(r'(.*): (.*)', str(BRANCH_COMMIT))
+            b=Build(DATE = timezone.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
+            b.save()
+            failures = jsondata['failures']
+        except:
+            return { 'error' : "Payload missing required fields" }
 
         for fail in failures:
             if len(fail) > int(settings.MAX_UPLOAD_SIZE):

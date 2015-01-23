@@ -61,11 +61,14 @@ def addData(request, return_json=False):
               response = HttpResponse("Your entry can be found here: "+result['build_url'])
             else:
               response = HttpResponse(result['error'])
+
+        if result.has_key('error'):
+          response.status_code=500
     else:
         if return_json:
-          response = JsonResponse({ 'error' : 'No valid data provided' })
+          response = JsonResponse({ 'error' : 'No valid data provided' },status_code=500)
         else:
-          response = HttpResponse("No valid data provided")
+          response = HttpResponse("No valid data provided", status_code=500)
 
     return response
 
