@@ -53,10 +53,14 @@ def addData(request, return_json=False):
         p = Parser(data)
         result = p.parse(request.META['HTTP_HOST'])
 
+
         if return_json:
-          response = JsonResponse(result)
+            response = JsonResponse(result)
         else:
-          response = HttpResponse("Your entry can be found here: "+result['build_url'])
+            if not result.has_key('error'):
+              response = HttpResponse("Your entry can be found here: "+result['build_url'])
+            else:
+              response = HttpResponse(result['error'])
     else:
         if return_json:
           response = JsonResponse({ 'error' : 'No valid data provided' })

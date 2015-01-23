@@ -35,6 +35,11 @@ class Parser:
         if self.contains_tags(jsondata) == True:
             return
 
+        try:
+            jsondata = json.loads(self.data)
+        except:
+             return  { 'error' : 'Invalid json' }
+
         MACHINE_NAME = str(jsondata['machine'])
         NATIVELSBSTRING = str(jsondata['nativelsb'])
         TARGET_SYS = str(jsondata['target_sys'])
