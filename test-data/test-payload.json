@@ -1,0 +1,18 @@
+{
+    "branch_commit": "(master-test): 736b49449233c936e3099b314a58e91ad17f9774", 
+    "build_sys": "x86_64-linux", 
+    "component": "base-passwd", 
+    "distro": "poky", 
+    "username" : "tester",
+    "email" : "tester@tester",
+    "failures": [
+        {
+            "log": "DEBUG: SITE files ['endian-little', 'bit-32', 'ix86-common', 'common-linux', 'common-glibc', 'i586-linux', 'common']\nDEBUG: Executing shell function do_install\ninstall: missing destination file operand after 'wefwefweffwe'\nTry 'install --help' for more information.\nWARNING: exit code 1 from a shell command.\nERROR: Function failed: do_install (wefe.do_install.36921)\n", 
+            "package": "base-passwd-3.5.29-r0", 
+            "task": "do_install"
+        }
+    ], 
+    "machine": "qemux86", 
+    "nativelsb": "Ubuntu-14.04", 
+    "target_sys": "i586-poky-linux"
+}
