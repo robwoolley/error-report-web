@@ -7,8 +7,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.conf import settings
 from Post.views import results_mode
 admin.autodiscover()
+
+try:
+    special_submitter = settings.SPECIAL_SUBMITTER['link']
+except AttributeError:
+    special_submitter = "none"
 
 urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -18,7 +24,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^(?i)Errors/Latest/$', 'Post.views.search', { 'mode' : results_mode.LATEST }, name= "latest_errors"),
-    url(r'^(?i)Errors/Latest/Autobuilder/$', 'Post.views.search', { 'mode' : results_mode.AUTOBUILDER }, name= "latest_autobuilder_errors"),
+
+    url(r'^(?i)Errors/Latest/'+special_submitter+'/$', 'Post.views.search', { 'mode' : results_mode.SPECIAL_SUBMITTER}, name= "latest_autobuilder_errors"),
     url(r'^(?i)Errors/Search/$', 'Post.views.search', {'mode' : results_mode.SEARCH }, name = "errors_search"),
     url(r'^(?i)Errors/Build/(?P<build_id>\d+)/$', 'Post.views.search', { 'mode' : results_mode.BUILD }, name= "build_errors"),
     url(r'^(?i)Errors/Details/(?P<fail_id>\d+)/$', 'Post.views.details', {'template_name' : 'error-details.html'}, name='details'),

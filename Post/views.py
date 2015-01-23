@@ -5,6 +5,8 @@
 # Licensed under the MIT license, see COPYING.MIT for details
 
 # Create your views here.
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 from __future__ import division
 from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse, render
@@ -13,6 +15,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from Post.models import BuildFailure
 from parser import Parser
+from django.conf import settings
 from createStatistics import Statistics
 from django.core.paginator import Paginator, EmptyPage
 from django.http import JsonResponse
@@ -21,9 +24,18 @@ import urllib
 
 class results_mode():
     LATEST = 0
-    AUTOBUILDER = 1
+    SPECIAL_SUBMITTER = 1
     SEARCH = 2
     BUILD = 3
+
+# Any items here are added to the context for all pages
+def common_context(request):
+    ret = {}
+    if hasattr(settings, "SPECIAL_SUBMITTER"):
+        ret['special_submitter'] = settings.SPECIAL_SUBMITTER
+
+    return ret
+
 
 @csrf_exempt
 def addData(request, return_json=False):
@@ -62,7 +74,10 @@ def apply_filter(context, items, name, value):
     return items
 
 def default(request):
-    return redirect(search, mode=results_mode.AUTOBUILDER)
+    if hasattr(settings, "SPECIAL_SUBMITTER"):
+        return redirect(search, mode=results_mode.SPECIAL_SUBMITTER)
+    else:
+        return redirect(search, mode=results_mode.LATEST)
 
 def search(request, mode=results_mode.LATEST, build_id=None):
     # Default page limit
@@ -142,10 +157,11 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     if request.GET.has_key("filter"):
         items = apply_filter(context, items, request.GET['type'], request.GET['filter'])
 
-    if mode == results_mode.AUTOBUILDER:
-        # Temp until we have a better way to identify
-        # autobuilder reports
-        items = items.filter(BUILD__NAME__istartswith="yocto")
+    if mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
+        #Special submitter mode see settings.py to enable
+        name = settings.SPECIAL_SUBMITTER['name']
+        items = items.filter(BUILD__NAME__istartswith=name)
+
     elif mode == results_mode.SEARCH and request.GET.has_key("query"):
         items = items.filter(ERROR_DETAILS__icontains=request.GET['query'])
 

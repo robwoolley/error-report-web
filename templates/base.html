@@ -60,16 +60,21 @@ Licensed under the MIT license, see COPYING.MIT for details
             </div>
           </div>
           {% url "latest_errors" as latest_errors_url %}
-          {% url "latest_autobuilder_errors" as latest_autobuilder_errors_url %}
+          {% url "latest_autobuilder_errors" as latest_special_errors_url %}
           {% url "statistics" as stats_url %}
+          {% url "search" as search_url %}
+          {% url "build" as build_url %}
 
           <div class="row-fluid">
-            {% if not request.GET.query %}
+              {# Don't show navigation on the search or build page #}
+       {% if not request.path == build_url or not request.path == search_url  %}
             <ul class="nav nav-pills">
 
-              <li {% if request.path  == latest_autobuilder_errors_url %}class="active"{% endif %}>
-                <a href="{{latest_autobuilder_errors_url}}">Latest Autobuilder errors</a>
+              {% if special_submitter %}
+              <li {% if request.path  == latest_special_errors_url %}class="active"{% endif %}>
+                  <a href="{{latest_special_errors_url}}" title="{{special_submitter.title}}">Latest {{special_submitter.title}} errors</a>
               </li>
+              {% endif %}
 
               <li {% if request.path == latest_errors_url %}class="active" {%endif%}>
                 <a href="{{latest_errors_url}}">Latest errors</a>
@@ -79,7 +84,7 @@ Licensed under the MIT license, see COPYING.MIT for details
                 <a href="{{stats_url}}">Statistics</a>
               </li>
             </ul>
-            {% endif %}
+       {% endif %}
 
             {% block content %}{% endblock %}
           </body>

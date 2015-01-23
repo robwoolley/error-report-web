@@ -22,6 +22,17 @@ DATABASES = {
     }
 }
 
+
+# Uncomment to add a tab in the UI which is similar to the latest errors page
+# but all queries on it are additionally filtered by the submitter being the
+# string defined below.
+#SPECIAL_SUBMITTER = {
+#    'name' : "yocto-autobuilder", # Submitter name to filter on
+#    'title' : "Autobuilder", # Title that is displayed
+#    'link' : "Autobuilder", # Must be valid for a url
+#}
+
+# Maximum upload size for the payload send by send-error-rpoert
 MAX_UPLOAD_SIZE = "5242880"
 
 # Local time zone for this installation. Choices can be found here:
@@ -166,6 +177,7 @@ LOGGING = {
 TEMPLATE_CONTEXT_PROCESSORS = (
   'django.contrib.auth.context_processors.auth',
   'django.core.context_processors.request',
+  'Post.views.common_context',
 )
 
 AUTH_PROFILE_MODULE = 'registration.RegistrationProfile'
