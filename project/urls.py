@@ -6,7 +6,7 @@
 
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
 from Post.views import results_mode
 admin.autodiscover()
@@ -28,11 +28,11 @@ urlpatterns = patterns('',
     url(r'^(?i)Errors/Latest/'+special_submitter+'/$', 'Post.views.search', { 'mode' : results_mode.SPECIAL_SUBMITTER}, name= "latest_autobuilder_errors"),
     url(r'^(?i)Errors/Search/$', 'Post.views.search', {'mode' : results_mode.SEARCH }, name = "errors_search"),
     url(r'^(?i)Errors/Build/(?P<build_id>\d+)/$', 'Post.views.search', { 'mode' : results_mode.BUILD }, name= "build_errors"),
-    url(r'^(?i)Errors/Details/(?P<fail_id>\d+)/$', 'Post.views.details', {'template_name' : 'error-details.html'}, name='details'),
+    url(r'^(?i)Errors/Details/(?P<fail_id>\d+)/$', 'Post.views.details', name='details'),
     url(r'^(?i)Errors/Statistics/(?P<key>\w+)', 'Post.views.chart', {'template_name' : 'home.html'}, name= "statistics"),
-    url(r'^Errors/ErrorPage/$', TemplateView.as_view(template_name="error-page.html"), name ="errorpage"),
     url(r'^(?i)ClientPost/$', 'Post.views.addData'),
     url(r'^(?i)ClientPost/JSON/$', 'Post.views.addData', { 'return_json' : True }),
     url(r'^(?i)Errors/$', 'Post.views.default', name="main"),
     url(r'^(?i)Statistics/$', TemplateView.as_view(template_name="home.html"), name = "statistics"),
+    url(r'^$', RedirectView.as_view(pattern_name="main")),
 )

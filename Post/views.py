@@ -210,14 +210,14 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     return render(request, "latest-errors.html", context)
 
 
-def details(request, template_name, fail_id):
+def details(request, fail_id):
 
     build_failure = BuildFailure.objects.filter(id=fail_id)
     build_failure = build_failure.select_related("BUILD")
 
     context = {'details' : build_failure }
 
-    return render(request, template_name, context)
+    return render(request, "error-details.html", context)
 
 @csrf_exempt
 def chart(request, template_name, key):
