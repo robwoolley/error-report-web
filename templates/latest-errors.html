@@ -104,7 +104,7 @@
                     <i class="icon-filter hover" title="Filter by {{build_fail.RECIPE}}"></i>
                   </a>
                 </td>
-                <td class="recipe_version"><a href="{% url "details" build_fail.id %}" data-toggle="tooltip" title="{{ build_fail.RECIPE_VERSION }}">{{ build_fail.RECIPE_VERSION|truncatechars:13 }}</a></td>
+                <td class="recipe_version"><a href="{% url "details" build_fail.id %}" {% if build_fail.RECIPE_VERSION|length > 13 %}class="tooltip-me" data-toggle="tooltip" title="{{ build_fail.RECIPE_VERSION }}"{%endif%}>{{ build_fail.RECIPE_VERSION|truncatechars:13 }}</a></td>
                 <td class="task"><a href="{% url "details" build_fail.id %}">{{ build_fail.TASK }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.TASK}}" data-type="task">
                     <i class="icon-filter hover" title="Filter by {{build_fail.TASK}}"></i>

@@ -141,7 +141,7 @@ $(document).ready(function(){
       html: true
   });
 
-  $(".recipe_version a").tooltip();
+  $(".recipe_version a.tooltip-me").tooltip();
 
   $(".back-btn").click(function (e){
     window.history.back();
