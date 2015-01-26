@@ -15,6 +15,12 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get('/Statistics/')
         self.assertEqual(response.status_code, 200)
 
+        response = self.client.get('/Errors/Build/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/Errors/Details/1/')
+        self.assertEqual(response.status_code, 200)
+
     # Opening test-payload.json and submitting it to server
     # expecting json response 1st item inserted to db
     def test_submission(self):
@@ -104,8 +110,21 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual("Payload missing required fields" in ret['error'],
                          True)
 
+    # Test invalid parameters
+    def test_invalid_parms(self):
 
-
-
-
-
+        response = self.client.get("/Errors/Latest/?order_by=wfwjeofiwejo")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?filter=wefwfe")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?filter=wefwfe&type=wefijwoe")
+        response = self.client.get("/Errors/Latest/?page=-1")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?page=wefwef")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?limit=-1")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?limit=wefwef")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/Errors/Latest/?order_by=-iojqwef&filter=wefwef&type=dewwef&limit=wefe&page=wefwef")
+        self.assertEqual(response.status_code, 200)
