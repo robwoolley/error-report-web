@@ -123,6 +123,9 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         order_by = '-BUILD__DATE'
 
     context = {
+        'results_mode' : results_mode,
+        'mode' : mode,
+        'build_id' : build_id,
         'tablecols' : [
         {'name': 'Submitted on',
          'clclass' : 'submitted_on',
@@ -265,6 +268,6 @@ def chart(request, template_name, key):
                'chart_id': key,
               }
 
-    return render_to_response("discretebarchart.html",
-                              context,
-                              RequestContext(request))
+    return render(request,
+                  "discretebarchart.html",
+                  context)
