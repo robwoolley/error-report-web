@@ -9,8 +9,7 @@ Setup
 
 Requirements:
 
-* Django 1.6
-* django-registration 0.8
+* Django 1.7.3
 
 Additional if using mysql backend:
 
