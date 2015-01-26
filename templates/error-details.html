@@ -1,67 +1,65 @@
 {% extends "base.html" %}
 {% block content %}
-			<div class="row-fluid">
-				<div class="page-header">
-                                  <a class="btn pull-left back-btn" style="margin-top:7px;" href="#">
-						<i class="icon-arrow-left"></i>
-					</a>
-					{%if details %}
-						{% for detail in details %}
-							<h1 style="margin-left:60px;">{{detail.RECIPE}}-{{detail.RECIPE_VERSION}} {{detail.TASK}} </h1>
-				</div>
-				<div class="row span8">
-						<pre>{{detail.ERROR_DETAILS}}</pre>
-				</div>
-				<div class="row span3">
-					<div class="well">
-						<h2>Error details</h2>
-						<dl class="dl-vertical">
-							<dt>Submitted on:</dt>
-							<dd>{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</dd>
-							<dt>Task:</dt>
-							<dd>{{ detail.TASK }}</dd>
-							<dt>Recipe:</dt>
-							<dd>{{detail.RECIPE }} </dd>
-							<dt>Machine:</dt>
-							<dd>{{ detail.BUILD.MACHINE }}</dd>
-							<dt>Distro:</dt>
-							<dd>{{detail.BUILD.DISTRO}}</dd>
-							<dt>Build system:</dt>
-							<dd>{{ detail.BUILD.BUILD_SYS }}</dd>
-							<dt>Target system:</dt>
-							<dd>{{ detail.BUILD.TARGET_SYS }}</dd>
-							<dt>Host distro:</dt>
-							<dd>{{ detail.BUILD.NATIVELSBSTRING }}</dd>
-							<dt>Branch:</dt>
-							<dd>{{ detail.BUILD.BRANCH }}</dd>
-							<dt>Commit:</dt>
-							<dd class = "commit">{{ detail.BUILD.COMMIT }}</dd>
-								{% if "yocto-autobuilder" in detail.BUILD.NAME and "master" in detail.BUILD.BRANCH %}
-									<dd><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id={{detail.BUILD.COMMIT}}">View commit</a></dd> 
-								{% endif %}
+<div class="row-fluid">
 
-                                                        <dt>Build:</dt>
-                                                        <dd><a href="{%url 'build_errors' detail.BUILD.id %}">{{detail.BUILD.id}}</a></dd>
+  {%if details|length = 0 %}
+    <div class="alert"><p>Build # not found</p></div>
+  {% else %}
+  <div class="page-header">
+    <a class="btn pull-left back-btn" style="margin-top:7px;" href="#">
+      <i class="icon-arrow-left"></i>
+    </a>
+    {% for detail in details %}
+    <h1 style="margin-left:60px;">{{detail.RECIPE}}-{{detail.RECIPE_VERSION}} {{detail.TASK}} </h1>
+  </div>
+  <div class="row span8">
+    <pre>{{detail.ERROR_DETAILS|escapejs}}</pre>
+  </div>
+  <div class="row span3">
+    <div class="well">
+      <h2>Error details</h2>
+      <dl class="dl-vertical">
+        <dt>Submitted on:</dt>
+        <dd>{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</dd>
+        <dt>Task:</dt>
+        <dd>{{ detail.TASK }}</dd>
+        <dt>Recipe:</dt>
+        <dd>{{detail.RECIPE }} </dd>
+        <dt>Machine:</dt>
+        <dd>{{ detail.BUILD.MACHINE }}</dd>
+        <dt>Distro:</dt>
+        <dd>{{detail.BUILD.DISTRO}}</dd>
+        <dt>Build system:</dt>
+        <dd>{{ detail.BUILD.BUILD_SYS }}</dd>
+        <dt>Target system:</dt>
+        <dd>{{ detail.BUILD.TARGET_SYS }}</dd>
+        <dt>Host distro:</dt>
+        <dd>{{ detail.BUILD.NATIVELSBSTRING }}</dd>
+        <dt>Branch:</dt>
+        <dd>{{ detail.BUILD.BRANCH }}</dd>
+        <dt>Commit:</dt>
+        <dd class = "commit">{{ detail.BUILD.COMMIT }}</dd>
+        {% if "yocto-autobuilder" in detail.BUILD.NAME and "master" in detail.BUILD.BRANCH %}
+        <dd><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id={{detail.BUILD.COMMIT}}">View commit</a></dd> 
+        {% endif %}
 
-							<dt>Submitter:</dt>
-								{% if "@" in detail.BUILD.EMAIL %}
-									<dd> <a href="mailto:{{detail.BUILD.EMAIL}}">{{detail.BUILD.EMAIL}}</a> </dd>
-								{% else %}
-									<dd>{{ detail.BUILD.NAME }}</dd>
-								{% endif %}
-								<!--
-								{% if "yocto-autobuilder" in detail.BUILD.NAME %}
-										<dd><a target="_blank" href="#" >View Autobuilder failed step</a></dd>
-								{% endif %}
-								-->
-						</dl>
-						<div>
-						<a class="btn btn-block" target="_blank" href="https://bugzilla.yoctoproject.org/enter_bug.cgi?classification=__all" >Open a bug</a>
-						</div>
-				{% endfor %}
-				{% endif %}
-				</div>
-				</div>
-			</div>
+        <dt>Build:</dt>
+        <dd><a href="{%url 'build_errors' detail.BUILD.id %}">#{{detail.BUILD.id}}</a></dd>
+
+        <dt>Submitter:</dt>
+        {% if "@" in detail.BUILD.EMAIL %}
+        <dd> <a href="mailto:{{detail.BUILD.EMAIL}}">{{detail.BUILD.EMAIL}}</a> </dd>
+        {% else %}
+        <dd>{{ detail.BUILD.NAME }}</dd>
+        {% endif %}
+      </dl>
+      <div>
+        <a class="btn btn-block" target="_blank" href="https://bugzilla.yoctoproject.org/enter_bug.cgi?classification=__all" >Open a bug</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+ {% endif %}
 
 {% endblock %}
