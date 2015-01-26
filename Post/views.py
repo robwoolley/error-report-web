@@ -19,6 +19,7 @@ from createStatistics import Statistics
 from django.core.paginator import Paginator, EmptyPage
 from django.core.exceptions import FieldError
 from django.http import JsonResponse
+from django.db.models import Q
 import json
 import urllib
 
@@ -191,7 +192,18 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         items = items.filter(BUILD__NAME__istartswith=name)
 
     elif mode == results_mode.SEARCH and request.GET.has_key("query"):
-        items = items.filter(ERROR_DETAILS__icontains=request.GET['query'])
+        query = request.GET["query"]
+
+        items = items.filter(
+                             Q(BUILD__NAME__icontains=query) |
+                             Q(BUILD__DISTRO__icontains=query) |
+                             Q(BUILD__MACHINE__icontains=query) |
+                             Q(RECIPE=query) |
+                             Q(BUILD__NATIVELSBSTRING=query) |
+                             Q(BUILD__COMMIT__icontains=query) |
+                             Q(BUILD__BRANCH__icontains=query) |
+                             Q(TASK__icontains=query) |
+                             Q(ERROR_DETAILS__icontains=query))
 
     elif mode == results_mode.BUILD and build_id:
         items = items.filter(BUILD=build_id)
