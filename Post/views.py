@@ -11,13 +11,13 @@ from __future__ import division
 from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse, render
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.shortcuts import redirect
 from Post.models import BuildFailure
 from parser import Parser
 from django.conf import settings
 from createStatistics import Statistics
 from django.core.paginator import Paginator, EmptyPage
+from django.core.exceptions import FieldError
 from django.http import JsonResponse
 import json
 import urllib
@@ -75,9 +75,14 @@ def addData(request, return_json=False):
 def apply_filter(context, items, name, value):
     # Look up the field name for filtering
     # e.g. filter_pair = (RECIPE, value)
+    filter_pair = None
+
     for col in context['tablecols']:
       if col['clclass'] == name:
         filter_pair = (col['field'], value)
+
+    if not filter_pair:
+        return items
 
     items = items.filter(filter_pair)
     return items
@@ -92,10 +97,21 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     # Default page limit
     limit = 25
 
+    # Default page
+    page = 1
+
     items = BuildFailure.objects.all()
 
     if request.GET.has_key("limit"):
-        request.session['limit'] = request.GET['limit']
+        try:
+            n_limit = int(request.GET['limit'])
+            if n_limit > 0:
+                limit = n_limit
+        except ValueError:
+            # just use the Default page limit
+            pass
+
+        request.session['limit'] = limit
 
     if request.session.has_key('limit'):
         limit = request.session['limit']
@@ -103,6 +119,7 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     if request.GET.has_key("order_by"):
         order_by = request.GET['order_by']
     else:
+        # Default order by
         order_by = '-BUILD__DATE'
 
     context = {
@@ -162,8 +179,7 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         }],
     }
 
-
-    if request.GET.has_key("filter"):
+    if request.GET.has_key("filter") and request.GET.has_key("type"):
         items = apply_filter(context, items, request.GET['type'], request.GET['filter'])
 
     if mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
@@ -185,7 +201,14 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         total_from = total - int(limit)
         if request.GET.has_key('page'):
           # fetch a 2 extra pages around the current page
-          total_from = total - int(limit)*(int(request.GET['page'])+2)
+          try:
+              page = int(request.GET['page'])
+          except:
+              # We pick up the Default page
+              pass
+
+          # Get an extra two pages worth to populate the paginator
+          total_from = total - limit*(page+2)
 
         items = items.filter(id__range=(total_from,total))
 
@@ -195,19 +218,24 @@ def search(request, mode=results_mode.LATEST, build_id=None):
 
     build_failures = Paginator(items, limit)
 
-    if request.GET.has_key('page'):
-        try:
-            build_failures = build_failures.page(request.GET['page'])
-        except EmptyPage:
-            build_failures = build_failures.page(build_failures.num_pages)
-    else:
-        build_failures = build_failures.page(1)
-
+    try:
+        build_failures = build_failures.page(page)
+    except EmptyPage:
+        build_failures = build_failures.page(build_failures.num_pages)
 
     context['build_failures'] = build_failures
 
+    # We don't know if the order_by will be valid right up until the sql
+    # query is executed during render so we have to catch an invalid order_by
+    # here
+    try:
+        return render(request, "latest-errors.html", context)
+    except FieldError:
+        items = items.order_by()
+        return render(request, "latest-errors.html", context)
 
-    return render(request, "latest-errors.html", context)
+
+
 
 
 def details(request, fail_id):
