@@ -67,9 +67,9 @@ def addData(request, return_json=False):
           response.status_code=500
     else:
         if return_json:
-          response = JsonResponse({ 'error' : 'No valid data provided' },status_code=500)
+          response = JsonResponse({ 'error' : 'No valid data provided' },status=500)
         else:
-          response = HttpResponse("No valid data provided", status_code=500)
+          response = HttpResponse("No valid data provided", status=500)
 
     return response
 
