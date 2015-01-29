@@ -16,7 +16,11 @@ def send_data (url, data_file):
         data = urllib.urlencode({'data': data })
 
         req = urllib2.Request(url, data=data, headers={'Content-type': 'application/json'})
-        response = urllib2.urlopen(req)
+        try:
+            response = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            response = e
+
 
         print "===== Response ===="
         print response.read()
@@ -27,3 +31,5 @@ if __name__ == '__main__':
 
     else:
         send_data(sys.argv[1], sys.argv[2])
+
+    sys.exit(0)
