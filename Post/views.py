@@ -31,7 +31,11 @@ class results_mode():
 
 # Any items here are added to the context for all pages
 def common_context(request):
-    ret = {}
+    #Make the initial mode state -1 to indicate unset for use in the base template
+    ret = {
+        'mode' : -1,
+    }
+
     if hasattr(settings, "SPECIAL_SUBMITTER"):
         ret['special_submitter'] = settings.SPECIAL_SUBMITTER
 

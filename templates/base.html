@@ -66,8 +66,8 @@ Licensed under the MIT license, see COPYING.MIT for details
           {% url "build" as build_url %}
 
           <div class="row-fluid">
-            {# Don't show navigation on the search or build page #}
-            {% if mode != results_mode.BUILD and mode != results_mode.SEARCH %}
+            {# Don't show navigation on the search or build page or details page #}
+            {% if mode != results_mode.BUILD and mode != results_mode.SEARCH and not details %}
             <ul class="nav nav-pills">
 
               {% if special_submitter %}
