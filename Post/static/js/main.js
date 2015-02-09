@@ -94,21 +94,45 @@ $(document).ready(function(){
 
   /* Toggle a column */
   $(".col-toggle").change(function(){
+    var updateSearch = false;
+    var field = $(this).data('field');
+    var col = $(this).val();
+    var search;
 
-    if ($(this).prop("checked")){
-      console.log("."+$(this).val());
-      $("."+$(this).val()).show();
-    } else {
-      $("."+$(this).val()).hide();
+    if ($(this).prop("checked")) {
+      $("."+col).show();
+    }  else {
+      $("."+col).hide();
+
+      /* If we're hiding a column which has an order_by or a filter applied
+       * then remove these parameters.
+       */
+
+      search = parseUrlParams();
+
+      if (search.hasOwnProperty('type') && search.type.search(col) != -1){
+        delete search.type;
+        delete search.filter;
+        updateSearch = true;
+      }
+
+      if (search.hasOwnProperty('order_by') &&
+          search.order_by.search(field) != -1){
+        delete search.order_by;
+        updateSearch = true;
+      }
     }
 
     var disabled_cols = [];
     /* Update the cookie */
-    $("th").not(":visible").map(function(){
-      disabled_cols.push($(this).prop("class"));
+    $(".col-toggle").not(":checked").map(function(){
+      disabled_cols.push($(this).val());
     });
 
     $.cookie("cols", disabled_cols);
+
+    if (updateSearch)
+      window.location.search = dumpsUrlParams(search);
   });
 
   /* Display or hide table columns before showing the table */

@@ -43,7 +43,7 @@
                 <li>
                {# Some columns are required as minimum so disable unchecking #}
                   <label class="checkbox {%if col.disable_toggle%}muted{%endif%}">
-                    <input type="checkbox" class="col-toggle" id="checkbox-{{col.clclass}}"  value="{{col.clclass}}" checked="checked" {%if col.disable_toggle%}disabled="disabled"{%endif%} />
+                    <input type="checkbox" class="col-toggle" id="checkbox-{{col.clclass}}"  value="{{col.clclass}}" checked="checked" {%if col.disable_toggle%}disabled="disabled"{%endif%} data-field="{{col.field}}" />
                     {{col.name}}
                   </label>
                 </li>
