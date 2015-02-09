@@ -102,9 +102,6 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     # Default page limit
     limit = 25
 
-    # Default page
-    page = 1
-
     items = BuildFailure.objects.all()
 
     if request.GET.has_key("limit"):
@@ -116,16 +113,13 @@ def search(request, mode=results_mode.LATEST, build_id=None):
             # just use the Default page limit
             pass
 
-        request.session['limit'] = limit
+    request.session['limit'] = limit
 
-    if request.session.has_key('limit'):
-        limit = request.session['limit']
+    # Default page = 1
+    page = request.GET.get('page', 1)
 
-    if request.GET.has_key("order_by"):
-        order_by = request.GET['order_by']
-    else:
-        # Default order by
-        order_by = '-BUILD__DATE'
+    # Default order_by -BUILD__DATE
+    order_by = request.GET.get("order_by", '-BUILD__DATE')
 
     context = {
         'results_mode' : results_mode,
@@ -217,17 +211,8 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     # a range instead and then feed that to the paginator.
     elif mode == results_mode.LATEST and not request.GET.has_key('filter'):
         total = items.count()
-        total_from = total - int(limit)
-        if request.GET.has_key('page'):
-          # fetch a 2 extra pages around the current page
-          try:
-              page = int(request.GET['page'])
-          except:
-              # We pick up the Default page
-              pass
-
-          # Get an extra two pages worth to populate the paginator
-          total_from = total - limit*(page+2)
+        # Get an extra two pages worth to populate the paginator
+        total_from = total - limit*(int(page)+2)
 
         items = items.filter(id__range=(total_from,total))
 
