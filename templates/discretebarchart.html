@@ -22,7 +22,7 @@ nv.addGraph(function() {
 
      tooltip_str = x + ": " +y;
      d3.selectAll('.discreteBar').on('click', function() {
-       window.location.href='{% url 'errors_search' %}?filter='+x+'&type={{chart_id|lower}}';
+       window.location.href='{% url 'latest_errors' %}?filter='+x+'&type={{chart_id|lower}}';
      });
      return tooltip_str;
    });
