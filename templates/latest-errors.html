@@ -19,12 +19,12 @@
       {% endif %}
 
       <div class="pull-right">
-        <span class="help-inline" style="padding-top:5px;">Show rows:</span>
+        <span class="help-inline" style="padding-top:5px;">Show rows: </span>
         <select style="margin-top:5px;margin-bottom:0px;" class="input-mini pagesize">
           {% with "10 25 50 100 150" as list%}
           {% for i in list.split %}
-          {% if request.session.limit == i %}
-          <option value="{{i}}" selected>{{i}}</option>
+          {% if request.session.limit == i|add:0 %}
+          <option value="{{i}}" class="active" selected>{{i}}</option>
           {% else %}
           <option value="{{i}}">{{i}}</option>
           {% endif %}
@@ -194,7 +194,7 @@
               <select style="margin-top:5px;margin-bottom:0px;" class="input-mini pagesize">
                 {% with "10 25 50 100 150" as list%}
                 {% for i in list.split %}
-                {% if request.session.limit == i %}
+                {% if request.session.limit == i|add:0 %}
                 <option value="{{i}}" selected>{{i}}</option>
                 {% else %}
                 <option value="{{i}}">{{i}}</option>
