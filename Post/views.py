@@ -212,7 +212,10 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     elif mode == results_mode.LATEST and not request.GET.has_key('filter'):
         total = items.count()
         # Get an extra two pages worth to populate the paginator
-        total_from = total - limit*(int(page)+2)
+        try:
+            total_from = total - limit*(int(page)+2)
+        except:
+            total_from = total - limit
 
         items = items.filter(id__range=(total_from,total))
 
@@ -224,7 +227,7 @@ def search(request, mode=results_mode.LATEST, build_id=None):
 
     try:
         build_failures = build_failures.page(page)
-    except EmptyPage:
+    except:
         build_failures = build_failures.page(build_failures.num_pages)
 
     context['build_failures'] = build_failures
