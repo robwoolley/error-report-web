@@ -18,10 +18,10 @@ except AttributeError:
 
 urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
     #url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^(?i)Errors/Latest/$', 'Post.views.search', { 'mode' : results_mode.LATEST }, name= "latest_errors"),
 
@@ -35,4 +35,6 @@ urlpatterns = patterns('',
     url(r'^(?i)Errors/$', 'Post.views.default', name="main"),
     url(r'^(?i)Statistics/$', TemplateView.as_view(template_name="home.html"), name = "statistics"),
     url(r'^$', RedirectView.as_view(pattern_name="main")),
+    # Url for backwards compatibility with old search links
+    url(r'^Errors/Search/Args/$', RedirectView.as_view(pattern_name="Post.views.search",query_string=True), {'mode':results_mode.SEARCH }),
 )
