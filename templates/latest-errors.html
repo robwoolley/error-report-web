@@ -72,10 +72,10 @@
 
                   {% if request.GET.order_by == "-"|add:col.field %}
                   <a href="#" class="sort-col sorted" data-order-by="{{col.field}}" >{{col.name}}</a>
-                  <span class="sorting-arrows" style="visibility: visible">&#9660</span>
+                  <span class="sorting-arrows" style="visibility: visible">&#9650</span>
                   {% else %}
                   <a href="#" class="sort-col sorted" data-order-by="-{{col.field}}" >{{col.name}}</a>
-                   <span class="sorting-arrows" style="visibility: visible">&#9650</span>
+                   <span class="sorting-arrows" style="visibility: visible">&#9660</span>
                    {% endif %}
                 {% else %}
                 {# default case is sorted by submitted_on #}
@@ -86,7 +86,7 @@
                    <span class="sorting-arrows" style="visibility: visible">&#9660</span>
 
                   {% else %}
-                  <a href="#" class="sort-col" data-order-by="-{{col.field}}" >{{col.name}}</a>
+                  <a href="#" class="sort-col" data-order-by="{{col.field}}" >{{col.name}}</a>
 
                    <span class="sorting-arrows">&#9660</span>
                    {% endif %}
