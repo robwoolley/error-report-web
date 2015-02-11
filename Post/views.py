@@ -196,8 +196,8 @@ def search(request, mode=results_mode.LATEST, build_id=None):
                              Q(BUILD__NAME__icontains=query) |
                              Q(BUILD__DISTRO__icontains=query) |
                              Q(BUILD__MACHINE__icontains=query) |
-                             Q(RECIPE=query) |
-                             Q(BUILD__NATIVELSBSTRING=query) |
+                             Q(RECIPE__icontains=query) |
+                             Q(BUILD__NATIVELSBSTRING__icontains=query) |
                              Q(BUILD__COMMIT__icontains=query) |
                              Q(BUILD__BRANCH__icontains=query) |
                              Q(TASK__icontains=query) |
