@@ -22,6 +22,7 @@ class Build(models.Model):
     TARGET_SYS = models.CharField(max_length=200)
     NAME = models.CharField(max_length=50)
     EMAIL = models.CharField(max_length=50)
+    LINK_BACK = models.TextField(max_length=300, blank=True, null=True)
 
 class BuildFailure(models.Model):
     TASK = models.CharField(max_length=200)
