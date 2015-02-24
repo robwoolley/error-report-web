@@ -46,17 +46,19 @@ def common_context(request):
 def addData(request, return_json=False):
     response = ''
     if request.method == 'POST':
-        # Backward compatibility with current send-error-report
-        # The data is now in the request body in new django as it's
-        # understandingand the data is application/json.
-        # The json is url encoded so we need to undo this here.
-        # [YOCTO #7245]
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
 
-        data = request.body[len('data='):]
-        data = urllib.unquote_plus(data)
+        if "send-error-report/0.3" in user_agent:
+            data = request.body
+        else:
+            # Backward compatibility with send-error-report < 0.3
+            # The json is url encoded so we need to undo this here.
+            data = request.body[len('data='):]
+            data = urllib.unquote_plus(data)
 
         p = Parser(data)
         result = p.parse(request.META['HTTP_HOST'])
+
 
 
         if return_json:
@@ -68,12 +70,12 @@ def addData(request, return_json=False):
               response = HttpResponse(result['error'])
 
         if result.has_key('error'):
-          response.status_code=500
+            response.status_code=500
     else:
         if return_json:
-          response = JsonResponse({ 'error' : 'No valid data provided' },status=500)
+            response = JsonResponse({ 'error' : 'No valid data provided' },status=500)
         else:
-          response = HttpResponse("No valid data provided", status=500)
+            response = HttpResponse("No valid data provided", status=500)
 
     return response
 

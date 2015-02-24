@@ -2,11 +2,31 @@ import unittest
 import urllib
 import json
 from django.test import Client
-from Post.models import BuildFailure
+from Post.models import BuildFailure, Build
+
+
+def delete_data_after (func):
+    def wrap(*args, **kwargs):
+        func(*args, **kwargs)
+
+        self = args[0]
+
+        bfo = BuildFailure.objects.all()
+        bo = Build.objects.all()
+
+        self.assertEqual(bfo.count(), 1)
+        self.assertEqual(bo.count(), 1)
+
+        bfo.delete()
+        bo.delete()
+
+    return wrap
+
 
 class SimpleTest(unittest.TestCase):
     def setUp(self):
         self.client = Client(HTTP_HOST="testhost")
+        self.client_0_3 = Client(HTTP_HOST="testhost", HTTP_USER_AGENT="send-error-report/0.3")
 
     def test_links(self):
         response = self.client.get('/Errors/Latest/')
@@ -23,6 +43,7 @@ class SimpleTest(unittest.TestCase):
 
     # Opening test-payload.json and submitting it to server
     # expecting json response 1st item inserted to db
+    @delete_data_after
     def test_submission(self):
 
         with open("test-data/test-payload.json") as f:
@@ -36,20 +57,37 @@ class SimpleTest(unittest.TestCase):
                                     "application/json")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual("/Build/1" in response.content, True)
-
         # Now let's see if the data entered the db
-        data_ob = BuildFailure.objects.get(id=1)
+        data_ob = BuildFailure.objects.get()
+
+        self.assertEqual("/Build/"+str(data_ob.BUILD.id) in response.content, True)
+
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
 
 
-    # Opening test-payload.json and submitting it to server
-    # expecting json response 2nd item inserted to db
+    @delete_data_after
+    def test_submission_0_3(self):
+        with open("test-data/test-payload.json") as f:
+            data = f.read()
+
+        response = self.client_0_3.post("/ClientPost/",
+                                        data,
+                                        "application/json")
+
+        self.assertEqual(response.status_code, 200)
+
+        # Now let's see if the data entered the db
+        data_ob = BuildFailure.objects.get()
+
+        self.assertEqual("/Build/"+str(data_ob.BUILD.id) in response.content, True)
+
+        self.assertEqual("tester" in data_ob.BUILD.NAME, True)
+
+    @delete_data_after
     def test_submission_ret_json(self):
 
         with open("test-data/test-payload.json") as f:
             data = f.read()
-
 
         data = urllib.urlencode({'data': data})
 
@@ -61,13 +99,37 @@ class SimpleTest(unittest.TestCase):
 
         ret = json.loads(response.content)
 
-        self.assertEqual(ret['build_id'], 2)
+        # Now let's see if the data entered the db
+        data_ob = BuildFailure.objects.get()
+
+        self.assertEqual(ret['build_id'], data_ob.BUILD.id)
         fails = ret['failures']
 
-        self.assertEqual(fails[0]['id'], 2)
+        self.assertEqual(fails[0]['id'], data_ob.id)
+        self.assertEqual("tester" in data_ob.BUILD.NAME, True)
+
+
+    @delete_data_after
+    def test_submission_ret_json_0_3(self):
+
+        with open("test-data/test-payload.json") as f:
+            data = f.read()
+
+        response = self.client_0_3.post("/ClientPost/JSON/",
+                                        data,
+                                        "application/json")
+
+        self.assertEqual(response.status_code, 200)
+
+        ret = json.loads(response.content)
+
+        data_ob = BuildFailure.objects.get()
+        self.assertEqual(ret['build_id'], data_ob.BUILD.id)
+        fails = ret['failures']
+
+        self.assertEqual(fails[0]['id'], data_ob.id)
 
         # Now let's see if the data entered the db
-        data_ob = BuildFailure.objects.get(id=2)
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
 
 
