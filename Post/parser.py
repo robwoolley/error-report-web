@@ -57,6 +57,9 @@ class Parser:
         except:
             return { 'error' : "Payload missing required fields" }
 
+        # Get the optional link_back value
+        LINK_BACK = jsondata.get("link_back", None)
+
         for fail in failures:
             if len(fail) > int(settings.MAX_UPLOAD_SIZE):
                 build_fails_logged.append({ 'id': -1, 'error' : "The size of the upload is too large" })
