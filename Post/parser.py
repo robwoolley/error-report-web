@@ -56,6 +56,7 @@ class Parser:
             g = re.match(r'(.*): (.*)', jsondata['branch_commit'])
             b.BRANCH = str(g.group(1))
             b.COMMIT = str(g.group(2))
+            b.DATE = timezone.now()
 
             b.save()
             failures = jsondata['failures']
