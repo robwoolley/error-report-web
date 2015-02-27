@@ -4,21 +4,23 @@ import json
 from django.test import Client
 from Post.models import BuildFailure, Build
 
-
+#Delete the data between tests
 def delete_data_after (func):
     def wrap(*args, **kwargs):
-        func(*args, **kwargs)
 
         self = args[0]
 
-        bfo = BuildFailure.objects.all()
         bo = Build.objects.all()
+        bfo = BuildFailure.objects.all()
 
+        bo.delete()
+
+        # run the test
+        func(*args, **kwargs)
+
+        # The submission should have added one row in each table
         self.assertEqual(bfo.count(), 1)
         self.assertEqual(bo.count(), 1)
-
-        bfo.delete()
-        bo.delete()
 
     return wrap
 
