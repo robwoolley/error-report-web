@@ -59,8 +59,6 @@ def addData(request, return_json=False):
         p = Parser(data)
         result = p.parse(request.META['HTTP_HOST'])
 
-
-
         if return_json:
             response = JsonResponse(result)
         else:
@@ -73,9 +71,11 @@ def addData(request, return_json=False):
             response.status_code=500
     else:
         if return_json:
-            response = JsonResponse({ 'error' : 'No valid data provided' },status=500)
+            response = JsonResponse({ 'error' : 'No valid data provided',
+                                      'max_log_size' : settings.MAX_UPLOAD_SIZE,
+                                    })
         else:
-            response = HttpResponse("No valid data provided", status=500)
+            response = HttpResponse("No valid data provided", status=200)
 
     return response
 
