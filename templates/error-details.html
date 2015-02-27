@@ -52,6 +52,11 @@
         {% else %}
         <dd>{{ detail.BUILD.NAME }}</dd>
         {% endif %}
+
+        {% if detail.BUILD.LINK_BACK %}
+        <dt>Link back:</dt>
+        <dd><a href="{{detail.BUILD.LINK_BACK}}" target="_blank">{{detail.BUILD.LINK_BACK}}</a></dd>
+        {% endif %}
       </dl>
       <div>
         <a class="btn btn-block" target="_blank" href="https://bugzilla.yoctoproject.org/enter_bug.cgi?classification=__all" >Open a bug</a>
