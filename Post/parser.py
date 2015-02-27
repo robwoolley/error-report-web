@@ -40,25 +40,27 @@ class Parser:
         if self.contains_tags(jsondata) == True:
             return  { 'error' : 'Invalid characters in json' }
 
+        b = Build.objects.create()
         try:
-            MACHINE_NAME = str(jsondata['machine'])
-            NATIVELSBSTRING = str(jsondata['nativelsb'])
-            TARGET_SYS = str(jsondata['target_sys'])
-            BRANCH_COMMIT = str(jsondata['branch_commit'])
-            COMPONENT = str(jsondata['component'])
-            BUILD_SYS = str(jsondata['build_sys'])
-            DISTRO = str(jsondata['distro'])
-            NAME = str(jsondata['username'])
-            EMAIL = str(jsondata['email'])
-            g = re.match(r'(.*): (.*)', str(BRANCH_COMMIT))
-            b=Build(DATE = timezone.now(), MACHINE = MACHINE_NAME, BRANCH = g.group(1), COMMIT = str(g.group(2)), TARGET = COMPONENT, DISTRO = DISTRO, NATIVELSBSTRING = NATIVELSBSTRING, BUILD_SYS = BUILD_SYS, TARGET_SYS = TARGET_SYS, NAME = NAME, EMAIL = EMAIL)
+            b.MACHINE_NAME = str(jsondata['machine'])
+            b.NATIVELSBSTRING = str(jsondata['nativelsb'])
+            b.TARGET_SYS = str(jsondata['target_sys'])
+            b.BRANCH_COMMIT = str(jsondata['branch_commit'])
+            b.COMPONENT = str(jsondata['component'])
+            b.BUILD_SYS = str(jsondata['build_sys'])
+            b.DISTRO = str(jsondata['distro'])
+            b.NAME = str(jsondata['username'])
+            b.EMAIL = str(jsondata['email'])
+            b.LINK_BACK = jsondata.get("link_back", None)
+
+            g = re.match(r'(.*): (.*)', jsondata['branch_commit'])
+            b.BRANCH = str(g.group(1))
+            b.COMMIT = str(g.group(2))
+
             b.save()
             failures = jsondata['failures']
         except:
-            return { 'error' : "Payload missing required fields" }
-
-        # Get the optional link_back value
-        LINK_BACK = jsondata.get("link_back", None)
+            return { 'error' : "Problem reading json payload" }
 
         for fail in failures:
             if len(fail) > int(settings.MAX_UPLOAD_SIZE):

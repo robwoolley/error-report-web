@@ -169,7 +169,7 @@ class SimpleTest(unittest.TestCase):
         ret = json.loads(response.content)
 
         self.assertEqual(response.status_code, 500)
-        self.assertEqual("Payload missing required fields" in ret['error'],
+        self.assertEqual("Problem reading json payload" in ret['error'],
                          True)
 
     # Test invalid parameters
