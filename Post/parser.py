@@ -42,7 +42,7 @@ class Parser:
 
         b = Build.objects.create()
         try:
-            b.MACHINE_NAME = str(jsondata['machine'])
+            b.MACHINE = str(jsondata['machine'])
             b.NATIVELSBSTRING = str(jsondata['nativelsb'])
             b.TARGET_SYS = str(jsondata['target_sys'])
             b.BRANCH_COMMIT = str(jsondata['branch_commit'])
