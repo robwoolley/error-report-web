@@ -1,11 +1,12 @@
 import unittest
 import urllib
 import json
+import re
 from django.test import Client
 from Post.models import BuildFailure, Build
 
 #Delete the data between tests
-def delete_data_after (func):
+def data_runner (func):
     def wrap(*args, **kwargs):
 
         self = args[0]
@@ -14,6 +15,7 @@ def delete_data_after (func):
         bfo = BuildFailure.objects.all()
 
         bo.delete()
+        bfo.delete()
 
         # run the test
         func(*args, **kwargs)
@@ -22,8 +24,38 @@ def delete_data_after (func):
         self.assertEqual(bfo.count(), 1)
         self.assertEqual(bo.count(), 1)
 
+        compare_db_obj_with_payload(self, bfo[0])
+
     return wrap
 
+def compare_db_obj_with_payload(self, bf_object):
+    f = open("test-data/test-payload.json")
+    data = f.read()
+    payload = json.loads(data)
+
+    self.assertEqual(bf_object.BUILD.MACHINE == str(payload['machine']), True)
+    self.assertEqual(bf_object.BUILD.NATIVELSBSTRING == str(payload['nativelsb']), True)
+    self.assertEqual(bf_object.BUILD.TARGET_SYS == str(payload['target_sys']), True)
+
+    self.assertEqual(bf_object.BUILD.BUILD_SYS == str(payload['build_sys']), True)
+    self.assertEqual(bf_object.BUILD.DISTRO == str(payload['distro']), True)
+    self.assertEqual(bf_object.BUILD.NAME == str(payload['username']), True)
+    self.assertEqual(bf_object.BUILD.EMAIL == str(payload['email']), True)
+    self.assertEqual(bf_object.BUILD.LINK_BACK == payload.get("link_back", None), True)
+
+    g = re.match(r'(.*): (.*)', payload['branch_commit'])
+
+    self.assertEqual(bf_object.BUILD.BRANCH == str(g.group(1)), True)
+    self.assertEqual(bf_object.BUILD.COMMIT == str(g.group(2)), True)
+
+    fail = payload['failures'][0]
+    package = str(fail['package'])
+    g = re.match(r'(.*)\-(\d.*)', package)
+
+    self.assertEqual(bf_object.ERROR_DETAILS == str(fail['log']), True)
+    self.assertEqual(bf_object.TASK == str(fail['task']), True)
+    self.assertEqual(bf_object.RECIPE == str(g.group(1)), True)
+    self.assertEqual(bf_object.RECIPE_VERSION == str(g.group(2)), True)
 
 class SimpleTest(unittest.TestCase):
     def setUp(self):
@@ -45,7 +77,7 @@ class SimpleTest(unittest.TestCase):
 
     # Opening test-payload.json and submitting it to server
     # expecting json response 1st item inserted to db
-    @delete_data_after
+    @data_runner
     def test_submission(self):
 
         with open("test-data/test-payload.json") as f:
@@ -67,7 +99,7 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
 
 
-    @delete_data_after
+    @data_runner
     def test_submission_0_3(self):
         with open("test-data/test-payload.json") as f:
             data = f.read()
@@ -85,7 +117,7 @@ class SimpleTest(unittest.TestCase):
 
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
 
-    @delete_data_after
+    @data_runner
     def test_submission_ret_json(self):
 
         with open("test-data/test-payload.json") as f:
@@ -111,7 +143,7 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
 
 
-    @delete_data_after
+    @data_runner
     def test_submission_ret_json_0_3(self):
 
         with open("test-data/test-payload.json") as f:
