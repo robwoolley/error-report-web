@@ -126,3 +126,7 @@ th a, th span {
 .commit {
   width: 140px;
 }
+
+.build-details {
+        word-break: break-all;
+}
