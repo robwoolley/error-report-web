@@ -41,6 +41,7 @@ td a:visited {
 }
 
 .commit {
+        word-wrap: break-word;
 	word-break: break-all;
         width: 140px;
 }
@@ -124,6 +125,7 @@ th a, th span {
         display: none;
 }
 
-.build-details {
+.build-details dd {
+        word-wrap: break-word;
         word-break: break-all;
 }
