@@ -26,6 +26,8 @@ def data_runner (func):
 
         compare_db_obj_with_payload(self, bfo[0])
 
+        self.assertIsNotNone(bfo[0].LEV_DISTANCE)
+
     return wrap
 
 def compare_db_obj_with_payload(self, bf_object):
@@ -75,6 +77,9 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get('/Errors/Details/1/')
         self.assertEqual(response.status_code, 200)
 
+        response = self.client.get('/Errors/SimilarTo/1/')
+        self.assertEqual(response.status_code, 200)
+
     # Opening test-payload.json and submitting it to server
     # expecting json response 1st item inserted to db
     @data_runner
@@ -97,7 +102,6 @@ class SimpleTest(unittest.TestCase):
         self.assertEqual("/Build/"+str(data_ob.BUILD.id) in response.content, True)
 
         self.assertEqual("tester" in data_ob.BUILD.NAME, True)
-
 
     @data_runner
     def test_submission_0_3(self):
@@ -223,4 +227,13 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get("/Errors/Latest/?limit=wefwef")
         self.assertEqual(response.status_code, 200)
         response = self.client.get("/Errors/Latest/?order_by=-iojqwef&filter=wefwef&type=dewwef&limit=wefe&page=wefwef")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get("/Errors/Build/9898989898/")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get("/Errors/SimilarTo/9898989898/")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get("/Errors/Details/9898989898/")
         self.assertEqual(response.status_code, 200)
