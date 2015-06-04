@@ -113,51 +113,52 @@
             </thead>
             <tbody>
               {%for build_fail in build_failures %}
+              {% url "details" build_fail.id as details_url %}
               <tr class="data">
-                <td class="submitted_on"> <a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
-                <td class="recipe"><a href="{% url "details" build_fail.id %}">{{ build_fail.RECIPE }}</a>
+                <td class="submitted_on"> <a href="{{details_url}}">{{ build_fail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
+                <td class="recipe"><a href="{{details_url}}">{{ build_fail.RECIPE }}</a>
                   <a class="filter" href="#" data-filter="{{build_fail.RECIPE}}" data-type="recipe">
                     <i class="icon-filter hover" title="Filter by {{build_fail.RECIPE}}"></i>
                   </a>
                 </td>
-                <td class="recipe_version"><a href="{% url "details" build_fail.id %}" {% if build_fail.RECIPE_VERSION|length > 13 %}class="tooltip-me" data-toggle="tooltip" title="{{ build_fail.RECIPE_VERSION }}"{%endif%}>{{ build_fail.RECIPE_VERSION|truncatechars:13 }}</a></td>
-                <td class="task"><a href="{% url "details" build_fail.id %}">{{ build_fail.TASK }}</a>
+                <td class="recipe_version"><a href="{{details_url}}" {% if build_fail.RECIPE_VERSION|length > 13 %}class="tooltip-me" data-toggle="tooltip" title="{{ build_fail.RECIPE_VERSION }}"{%endif%}>{{ build_fail.RECIPE_VERSION|truncatechars:13 }}</a></td>
+                <td class="task"><a href="{{details_url}}">{{ build_fail.TASK }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.TASK}}" data-type="task">
                     <i class="icon-filter hover" title="Filter by {{build_fail.TASK}}"></i>
                   </a>
 
                 </td>
-                <td class="machine"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.MACHINE }}</a>
+                <td class="machine"><a href="{{details_url}}">{{ build_fail.BUILD.MACHINE }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.MACHINE}}" data-type="machine">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.MACHINE}}"></i>
                   </a>
 
                 </td>
-                <td class="distro"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.DISTRO }}</a>
+                <td class="distro"><a href="{{details_url}}">{{ build_fail.BUILD.DISTRO }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.DISTRO}}" data-type="distro">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.DISTRO}}"></i>
                   </a>
 
                 </td>
-                <td class="build_sys"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.BUILD_SYS }}</a>
+                <td class="build_sys"><a href="{{details_url}}">{{ build_fail.BUILD.BUILD_SYS }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.BUILD_SYS}}" data-type="build_sys">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.BUILD_SYS}}"></i>
                   </a>
 
                 </td>
-                <td class="target_sys"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.TARGET_SYS }}</a>
+                <td class="target_sys"><a href="{{details_url}}">{{ build_fail.BUILD.TARGET_SYS }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.TARGET_SYS}}" data-type="target_sys">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.TARGET_SYS}}"></i>
                   </a>
 
                 </td>
-                <td class="nativelsbstring"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.NATIVELSBSTRING }}</a>
+                <td class="nativelsbstring"><a href="{{details_url}}">{{ build_fail.BUILD.NATIVELSBSTRING }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.NATIVELSBSTRING}}" data-type="nativelsbstring">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.NATIVELSBSTRING}}"></i>
                   </a>
 
                 </td>
-                <td class="branch"><a href="{% url "details" build_fail.id %}">{{build_fail.BUILD.BRANCH}}</a>
+                <td class="branch"><a href="{{details_url}}">{{build_fail.BUILD.BRANCH}}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.BRANCH}}" data-type="branch">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.BRANCH}}"></i>
                   </a>
@@ -174,7 +175,7 @@
 
                   </div>
                 </td>
-                <td class="submitter"><a href="{% url "details" build_fail.id %}">{{ build_fail.BUILD.NAME }} </a>
+                <td class="submitter"><a href="{{details_url}}">{{ build_fail.BUILD.NAME }} </a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.NAME}}" data-type="submitter">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.NAME}}"></i>
                   </a>
