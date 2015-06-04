@@ -28,6 +28,8 @@ def data_runner (func):
 
         self.assertIsNotNone(bfo[0].LEV_DISTANCE)
 
+        self.after_submission_test_links()
+
     return wrap
 
 def compare_db_obj_with_payload(self, bf_object):
@@ -64,7 +66,7 @@ class SimpleTest(unittest.TestCase):
         self.client = Client(HTTP_HOST="testhost")
         self.client_0_3 = Client(HTTP_HOST="testhost", HTTP_USER_AGENT="send-error-report/0.3")
 
-    def test_links(self):
+    def after_submission_test_links(self):
         response = self.client.get('/Errors/Latest/')
         self.assertEqual(response.status_code, 200)
 
