@@ -4,14 +4,24 @@
 
 <div class="row-fluid">
   {% if mode == results_mode.SEARCH %}
-  <div class="page-header"> <h1>{{build_failures.paginator.count}} errors found for "{{request.GET.query}}" {% if request.GET.filter %} filtered by "{{ request.GET.filter }}" {% endif %}</h1>
-  </div>
-  {% elif mode == results_mode.BUILD %}
-  <div class="page-header"> <h1>Errors for Build #{{build_id}}</h1>
-  </div>
-
+  <h1 class="page-header">
+  {{build_failures.paginator.count}}
+  errors found for "{{request.GET.query}}" {% if request.GET.filter %} filtered by "{{ request.GET.filter }}"
   {% endif %}
+  </h1>
 
+  {% elif mode == results_mode.BUILD %}
+  <h1 class="page-header">
+  {{build_failures.paginator.count}}
+  errors for Build #{{args.build_id}}
+  </h1>
+
+  {% elif mode == results_mode.SIMILAR_TO %}
+  <h1 class="page-header">
+  {{build_failures.paginator.count}}
+  Similar errors to <a href="{%url 'details' args.fail_id %}">#{{args.fail_id}}</a>
+  </h1>
+  {% endif %}
    <div class="navbar">
     <div class="navbar-inner">
       {% if request.GET.filter and not request.GET.query and build_failures and build_failures.paginator.count != 0 %}
@@ -57,7 +67,7 @@
           <thead>
             <tr>
               {% for col in tablecols %}
-              {# If a filter is applied #}
+              {% if col.field %}
               {% if  col.clclass in request.GET.type %}
                 <th class="filter-applied {{col.clclass}}" >
                   <span class="muted">
@@ -79,8 +89,9 @@
                    {% endif %}
                 {% else %}
                 {# default case is sorted by submitted_on #}
-
                 <th class="{{col.clclass}}">
+
+
                   {% if col.clclass == "submitted_on" and not request.GET.order_by %}
                    <a href="#" class="sort-col sorted" data-order-by="-{{col.field}}" >{{col.name}}</a>
                    <span class="sorting-arrows" style="visibility: visible">&#9660</span>
@@ -92,6 +103,11 @@
                    {% endif %}
                   </th>
                 {% endif %}
+
+                {% else %}
+                <th class="{{col.class}} muted">{{col.name}}</th>
+                {% endif %}
+
                 {%endfor%}
               </tr>
             </thead>
@@ -163,6 +179,15 @@
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.NAME}}"></i>
                   </a>
 
+                </td>
+                <td class="similar">
+                  {% with build_fail.get_similar_fails_count as similar_count %}
+                  {% if similar_count != 0 %}
+                  <a href="{% url "similar" build_fail.id %}">{{similar_count}}</a>
+                  {% else %}
+                  {{similar_count}}
+                  {% endif %}
+                  {% endwith %}
                 </td>
               </tr>
               {%endfor%}

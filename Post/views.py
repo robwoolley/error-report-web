@@ -17,17 +17,18 @@ from parser import Parser
 from django.conf import settings
 from createStatistics import Statistics
 from django.core.paginator import Paginator, EmptyPage
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.http import JsonResponse
 from django.db.models import Q
 import json
 import urllib
 
-class results_mode():
+class results_mode(object):
     LATEST = 0
     SPECIAL_SUBMITTER = 1
     SEARCH = 2
     BUILD = 3
+    SIMILAR_TO = 4
 
 # Any items here are added to the context for all pages
 def common_context(request):
@@ -57,7 +58,7 @@ def addData(request, return_json=False):
             data = urllib.unquote_plus(data)
 
         p = Parser(data)
-        result = p.parse(request.META['HTTP_HOST'])
+        result = p.parse(request)
 
         if return_json:
             response = JsonResponse(result)
@@ -100,7 +101,7 @@ def default(request):
     else:
         return redirect(search, mode=results_mode.LATEST)
 
-def search(request, mode=results_mode.LATEST, build_id=None):
+def search(request, mode=results_mode.LATEST, **kwargs):
     # Default page limit
     limit = 25
 
@@ -126,7 +127,7 @@ def search(request, mode=results_mode.LATEST, build_id=None):
     context = {
         'results_mode' : results_mode,
         'mode' : mode,
-        'build_id' : build_id,
+        'args' : kwargs,
         'tablecols' : [
         {'name': 'Submitted on',
          'clclass' : 'submitted_on',
@@ -180,7 +181,11 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         {'name': 'Submitter',
          'clclass': 'submitter',
          'field': 'BUILD__NAME',
-        }],
+        },
+        {'name': 'Similar',
+         'clclass': 'similar',
+        }
+      ],
     }
 
     if request.GET.has_key("filter") and request.GET.has_key("type"):
@@ -205,8 +210,15 @@ def search(request, mode=results_mode.LATEST, build_id=None):
                              Q(TASK__icontains=query) |
                              Q(ERROR_DETAILS__icontains=query))
 
-    elif mode == results_mode.BUILD and build_id:
-        items = items.filter(BUILD=build_id)
+    elif mode == results_mode.BUILD and 'build_id' in kwargs:
+        items = items.filter(BUILD=kwargs['build_id'])
+    elif mode == results_mode.SIMILAR_TO and 'fail_id' in kwargs:
+        try:
+            items = BuildFailure.objects.get(id=kwargs['fail_id']).get_similar_fails()
+        except ObjectDoesNotExist:
+            # Sabotage the queryset to 0 items so that we fail gracefully to
+            # "no results found"
+            items = items.filter(id=-1)
 
     # Do some special filtering to reduce the QuerySet to a manageable size
     # reversing or ordering the whole queryset is very expensive so we use
@@ -244,15 +256,13 @@ def search(request, mode=results_mode.LATEST, build_id=None):
         return render(request, "latest-errors.html", context)
 
 
-
-
-
 def details(request, fail_id):
+    try:
+      build_failure = BuildFailure.objects.get(id=fail_id)
+    except ObjectDoesNotExist:
+      build_failure = None
 
-    build_failure = BuildFailure.objects.filter(id=fail_id)
-    build_failure = build_failure.select_related("BUILD")
-
-    context = {'details' : build_failure }
+    context = {'detail' : build_failure }
 
     return render(request, "error-details.html", context)
 

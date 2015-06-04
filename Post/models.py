@@ -9,6 +9,8 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from datetime import datetime
 
+import Levenshtein
+
 # Create your models here.
 class Build(models.Model):
     DATE = models.DateTimeField('Submit date', blank=True, null=True)
@@ -30,3 +32,38 @@ class BuildFailure(models.Model):
     RECIPE_VERSION = models.CharField(max_length=200)
     ERROR_DETAILS = models.TextField(max_length=int(settings.MAX_UPLOAD_SIZE))
     BUILD = models.ForeignKey(Build)
+    LEV_DISTANCE = models.IntegerField(blank=True, null=True)
+
+    def get_similar_fails(self):
+        start = self.LEV_DISTANCE
+        end = self.LEV_DISTANCE + settings.SIMILAR_FAILURE_DISTANCE
+
+        query_set = BuildFailure.objects.filter(LEV_DISTANCE__range=(start,end)).exclude(id=self.id).filter(TASK=self.TASK)
+
+        return query_set
+
+    def get_similar_fails_count(self, count=False):
+        return self.get_similar_fails().count()
+
+    def calc_lev_distance(self):
+        if BuildFailure.objects.all().count() == 0:
+          return 0
+
+        # Use the last 400 characters of the ERROR_DETAILS.
+        # This is where the error message is likely to occour and
+        # reduces the computational load on calculating the Levenshtein
+        # distance.
+        seed = BuildFailure.objects.first().ERROR_DETAILS[-400:]
+        lv = Levenshtein.distance(str(seed), str(self.ERROR_DETAILS[-400:]))
+
+        # Offset the distance calculated against the length of the error.
+        return lv + len (self.ERROR_DETAILS)
+
+    def save(self, *args, **kwargs):
+
+        recalc_lev_distance = kwargs.pop('recalc_lev_distance', False)
+
+        if self.LEV_DISTANCE == None or recalc_lev_distance:
+            self.LEV_DISTANCE = self.calc_lev_distance()
+
+        super(BuildFailure, self).save(*args, **kwargs)

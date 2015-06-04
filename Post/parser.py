@@ -29,7 +29,7 @@ class Parser:
                 return True
         return False
 
-    def parse(self, host):
+    def parse(self, request):
         build_fails_logged = []
 
         try:
@@ -86,19 +86,27 @@ class Parser:
                 recipe_version = "unknown"
 
             f = BuildFailure(TASK = str(fail['task']), RECIPE = recipe, RECIPE_VERSION = recipe_version, ERROR_DETAILS = str(fail['log']), BUILD = b)
+
             f.save()
 
-            url = 'http://' + host + reverse('details', args=[f.id])
+            url = request.build_absolute_uri(reverse('details', args=[f.id]))
 
             build_fails_logged.append({ 'id' : f.id,
                                         'url' : url,
                                       })
 
-        build_url = 'http://' + host + reverse('build_errors', args=[b.id])
+        build_url = request.build_absolute_uri(reverse('build_errors', args=[b.id]))
+
+        num_similar_errors = f.get_similar_fails_count()
 
         result = { 'build_id' : b.id,
                    'build_url' : build_url,
                    'failures' : build_fails_logged,
+                   'num_similar_errors' : num_similar_errors,
                  }
+
+        if num_similar_errors > 0:
+            similars_url = request.build_absolute_uri(reverse('similar', args=[f.id]))
+            result['similar_errors_url'] = similars_url
 
         return result

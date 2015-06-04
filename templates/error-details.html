@@ -2,14 +2,13 @@
 {% block content %}
 <div class="row-fluid">
 
-  {%if details|length = 0 %}
-    <div class="alert"><p>Build # not found</p></div>
+  {% if detail == None %}
+    <div class="alert"><p>Build id not found</p></div>
   {% else %}
   <div class="page-header">
     <a class="btn pull-left back-btn" style="margin-top:7px;" href="#">
       <i class="icon-arrow-left"></i>
     </a>
-    {% for detail in details %}
     <h1 style="margin-left:60px;">{{detail.RECIPE}}-{{detail.RECIPE_VERSION}} {{detail.TASK}} </h1>
   </div>
   <div class="row span8">
@@ -57,11 +56,22 @@
         <dt>Link back:</dt>
         <dd><a href="{{detail.BUILD.LINK_BACK}}" target="_blank">{{detail.BUILD.LINK_BACK}}</a></dd>
         {% endif %}
+
+        <dt></a>Similar errors:</dt>
+        <dd>
+          {% with detail.get_similar_fails_count as similar_count %}
+            {% if similar_count %}
+            <a href="{% url 'similar' detail.id %}">{{similar_count}}</a>
+            {% else %}
+            {{similar_count|default_if_none:0}}
+            {% endif %}
+          {% endwith %}
+        </dd>
+
       </dl>
       <div>
         <a class="btn btn-block" target="_blank" href="https://bugzilla.yoctoproject.org/enter_bug.cgi?classification=__all" >Open a bug</a>
       </div>
-      {% endfor %}
     </div>
   </div>
 </div>

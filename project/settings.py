@@ -35,6 +35,10 @@ DATABASES = {
 # Maximum upload size for the payload send by send-error-rpoert
 MAX_UPLOAD_SIZE = "5242880"
 
+# Tolerance value to determine the distance between similar errors
+SIMILAR_FAILURE_DISTANCE = 10
+
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
