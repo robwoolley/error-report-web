@@ -35,6 +35,9 @@ class BuildFailure(models.Model):
     LEV_DISTANCE = models.IntegerField(blank=True, null=True)
 
     def get_similar_fails(self):
+        if self.LEV_DISTANCE is None:
+            return BuildFailure.objects.none()
+
         start = self.LEV_DISTANCE
         end = self.LEV_DISTANCE + settings.SIMILAR_FAILURE_DISTANCE
 
@@ -43,11 +46,12 @@ class BuildFailure(models.Model):
         return query_set
 
     def get_similar_fails_count(self, count=False):
+
         return self.get_similar_fails().count()
 
     def calc_lev_distance(self):
         if BuildFailure.objects.all().count() == 0:
-          return 0
+            return 0
 
         # Use the last 400 characters of the ERROR_DETAILS.
         # This is where the error message is likely to occour and
