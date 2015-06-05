@@ -218,7 +218,7 @@ def search(request, mode=results_mode.LATEST, **kwargs):
         except ObjectDoesNotExist:
             # Sabotage the queryset to 0 items so that we fail gracefully to
             # "no results found"
-            items = items.filter(id=-1)
+            items = items.none()
 
     # Do some special filtering to reduce the QuerySet to a manageable size
     # reversing or ordering the whole queryset is very expensive so we use
