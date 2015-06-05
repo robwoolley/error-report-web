@@ -220,19 +220,6 @@ def search(request, mode=results_mode.LATEST, **kwargs):
             # "no results found"
             items = items.none()
 
-    # Do some special filtering to reduce the QuerySet to a manageable size
-    # reversing or ordering the whole queryset is very expensive so we use
-    # a range instead and then feed that to the paginator.
-    elif mode == results_mode.LATEST and not request.GET.has_key('filter'):
-        total = items.count()
-        # Get an extra two pages worth to populate the paginator
-        try:
-            total_from = total - limit*(int(page)+2)
-        except:
-            total_from = total - limit
-
-        items = items.filter(id__range=(total_from,total))
-
     # Make sure we get django to do an inner join on our foreign key rather
     # than a query for each item
     items = items.select_related("BUILD").order_by(order_by)
