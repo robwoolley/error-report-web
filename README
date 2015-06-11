@@ -1,15 +1,14 @@
 Error reporting tool
 ===================
 
-This application based on Django, allows sending, receiving and viewing errors that occur when building an image.
-
+This application allows receiving and viewing errors that can be reported when using Yocto project Poky.
 
 Setup
 -----
 
 Requirements:
 
-* Django 1.7.3
+see requirements.txt
 
 Additional if using mysql backend:
 
@@ -21,29 +20,32 @@ Recommended:
 
 Setup instructions:
 
-1. Install the dependencies via `pip install -r requirements.txt`
-2. Set DATABASES.default.ENGINE in settings.py to use the database of your choice.
-3. Set SECRET_KEY in settings.py
-4. Setup the database schema with the Django model. Run `python manage.py syncdb`.
+1. Initialise and activate a python virtual environment. `virtualenv venv && source ./venv/bin/activate`
+2. Install the dependencies via `pip install -r requirements.txt`
+3. Set DATABASES.default.ENGINE in settings.py to use the database engine of your choice.
+4. Set a SECRET_KEY in settings.py
+5. Setup the database schema with the Django model. Run `python manage.py syncdb`.
 
 
 Usage
 -----
 
-`python manage.py runserver`
+To test the server run: `python manage.py runserver`
 
-In order to send the error to the server, all you have to do is to run "send-error-report file_name" ("file_name" is the file where the errors are stored).
-Then, you will receive a link to view your entry from the graphical interface. Also you can see statistical information based on all the errors from database.
+For production deployment see https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/modwsgi/
 
+In order to send an error report to the server, run the "send-error-report file_name" script which is available in Yocto project poky scripts directory.
+
+For more information on error reporting and log collection see: http://www.yoctoproject.org/docs/current/dev-manual/dev-manual.html#using-the-error-reporting-tool
 
 Maintenance
 -----------
 
 The code for this application is maintained by the Yocto Project.
 
-The latest version of the code can always be found here:
+The latest version can be checked out by git cloning:
 
-  http://git.yoctoproject.org/cgit/cgit.cgi/error-report-web/
+  git://git.yoctoproject.org/error-report-web
 
 Contributions are welcome. Please send patches / pull requests to
 yocto@yoctoproject.org with '[error-report-web]' in the subject.
