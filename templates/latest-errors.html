@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% load projecttags %}
+
+{% block head %}
+
+  {% if mode == results_mode.LATEST %}
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'errors_feed' %}" />
+  {% elif mode == results_mode.SPECIAL_SUBMITTER %}
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'special_submitter_errors_feed' %}" />
+  {% endif %}
+
+{% endblock %}
+
 {% block content %}
 
 <div class="row-fluid">
