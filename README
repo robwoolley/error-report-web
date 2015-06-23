@@ -50,6 +50,15 @@ The latest version can be checked out by git cloning:
 Contributions are welcome. Please send patches / pull requests to
 yocto@yoctoproject.org with '[error-report-web]' in the subject.
 
+To manage the size of your database there is a convenience command:
+
+Usage: ./manage.py culldb [options] <size>
+
+Culls the database to size in rows
+
+More info ./manage.py culldb --help
+
+! Make sure to have backups of data before deleting/culling !
 
 License
 -------
