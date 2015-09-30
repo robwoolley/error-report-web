@@ -85,7 +85,7 @@ class Parser:
                 recipe = package
                 recipe_version = "unknown"
 
-            f = BuildFailure(TASK = str(fail['task']), RECIPE = recipe, RECIPE_VERSION = recipe_version, ERROR_DETAILS = str(fail['log']), BUILD = b)
+            f = BuildFailure(TASK = str(fail['task']), RECIPE = recipe, RECIPE_VERSION = recipe_version, ERROR_DETAILS = fail['log'].encode('utf-8'), BUILD = b)
 
             f.save()
 
