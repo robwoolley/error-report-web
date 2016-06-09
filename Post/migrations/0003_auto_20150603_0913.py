@@ -34,9 +34,9 @@ def add_lev_distance_data(apps, schema_editor):
     while offset < count:
         objs = BuildFailure.objects.all()[offset : offset + pagesize]
         for f in objs:
-	    if f.LEV_DISTANCE is None:
-		f.LEV_DISTANCE = calc_lev_distance(f)
-	        f.save()
+            if f.LEV_DISTANCE is None:
+                f.LEV_DISTANCE = calc_lev_distance(f)
+                f.save()
 
         del objs
         offset = offset + pagesize
