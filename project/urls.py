@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^(?i)ClientPost/JSON/$', 'Post.views.addData', { 'return_json' : True }),
     url(r'^(?i)Errors/$', 'Post.views.default', name="main"),
     url(r'^(?i)Statistics/$', TemplateView.as_view(template_name="home.html"), name = "statistics"),
-    url(r'^$', RedirectView.as_view(pattern_name="main")),
+    url(r'^$', RedirectView.as_view(pattern_name="main", permanent=True)),
     # Url for backwards compatibility with old search links
-    url(r'^Errors/Search/Args/$', RedirectView.as_view(pattern_name="Post.views.search",query_string=True), {'mode':results_mode.SEARCH }),
+    url(r'^Errors/Search/Args/$', RedirectView.as_view(pattern_name="Post.views.search",query_string=True,permanent=True), {'mode':results_mode.SEARCH }),
 )
