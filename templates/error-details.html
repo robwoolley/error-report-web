@@ -9,7 +9,11 @@
     <a class="btn pull-left back-btn" style="margin-top:7px;" href="#">
       <i class="icon-arrow-left"></i>
     </a>
-    <h1 style="margin-left:60px;">{{detail.RECIPE}}-{{detail.RECIPE_VERSION}} {{detail.TASK}} </h1>
+    <h1 style="margin-left:60px;">
+        {% if detail.BUILD.ERROR_TYPE == error_types.RECIPE %}
+        {{detail.RECIPE}}-{{detail.RECIPE_VERSION}}
+        {% endif %}
+        {{detail.TASK}} </h1>
   </div>
   <div class="row span8">
     <pre>{{detail.ERROR_DETAILS}}</pre>
@@ -20,12 +24,19 @@
       <dl class="dl-vertical">
         <dt>Submitted on:</dt>
         <dd>{{ detail.BUILD.DATE|date:"d/m/y H:i"}}</dd>
+        <dt>Error type:</dt>
+        <dd>{{ detail.BUILD.get_ERROR_TYPE_display }}</dd>
+        {% if detail.BUILD.ERROR_TYPE == error_types.RECIPE %}
         <dt>Task:</dt>
         <dd>{{ detail.TASK }}</dd>
         <dt>Recipe:</dt>
         <dd>{{detail.RECIPE }} </dd>
         <dt>Recipe version:</dt>
         <dd>{{ detail.RECIPE_VERSION }}</dd>
+        {% else %}
+        <dt>Command:</dt>
+        <dd>{{ detail.TASK }}</dd>
+        {% endif %}
         <dt>Machine:</dt>
         <dd>{{ detail.BUILD.MACHINE }}</dd>
         <dt>Distro:</dt>

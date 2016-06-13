@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse, render
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
-from Post.models import BuildFailure
+from Post.models import BuildFailure, Build, ErrorType
 from parser import Parser
 from django.conf import settings
 from createStatistics import Statistics
@@ -83,16 +83,32 @@ def addData(request, return_json=False):
 def apply_filter(context, items, name, value):
     # Look up the field name for filtering
     # e.g. filter_pair = (RECIPE, value)
-    filter_pair = None
+    filters = []
 
-    for col in context['tablecols']:
-      if col['clclass'] == name:
-        filter_pair = (col['field'], value)
+    if name == 'error_type':
+        filters.append(('BUILD__ERROR_TYPE', value))
+    elif name == 'failure':
+        # failure column when is recipe error_type
+        # is build "recipe: task" otherwise only
+        # "task"
+        if ':' in value:
+            recipe = value.split(':')[0].strip()
+            task = value.split(':')[1].strip()
+            filters.append(('TASK', task)) 
+            filters.append(('RECIPE', recipe))
+        else:
+            filters.append(('TASK', value))
+    else:
+        for col in context['tablecols']:
+            if col['clclass'] == name:
+                filters.append((col['field'], value))
 
-    if not filter_pair:
+    if not filters:
         return items
 
-    items = items.filter(filter_pair)
+    for filter_pair in filters:
+        items = items.filter(filter_pair)
+
     return items
 
 def default(request):
@@ -128,24 +144,21 @@ def search(request, mode=results_mode.LATEST, **kwargs):
         'results_mode' : results_mode,
         'mode' : mode,
         'args' : kwargs,
+        'error_types': ErrorType,
         'tablecols' : [
         {'name': 'Submitted on',
          'clclass' : 'submitted_on',
          'field' : 'BUILD__DATE',
          'disable_toggle' : True,
         },
-        {'name': 'Recipe',
-         'clclass' : 'recipe',
-         'field' : 'RECIPE',
+        {'name': 'Error type',
+         'clclass' : 'error_type',
+         'field' : 'BUILD__ERROR_TYPE',
          'disable_toggle' : True,
         },
-        {'name': 'Recipe version',
-         'clclass': 'recipe_version',
-         'field' : 'RECIPE_VERSION',
-        },
-        {'name': 'Task',
-         'clclass': 'task',
-         'field' : 'TASK',
+        {'name': 'Failure',
+         'clclass': 'failure',
+         'field': 'TASK',
          'disable_toggle' : True,
         },
         {'name': 'Machine',
@@ -156,7 +169,6 @@ def search(request, mode=results_mode.LATEST, **kwargs):
         {'name': 'Distro',
          'clclass': 'distro',
          'field': 'BUILD__DISTRO',
-         'disable_toggle' : True,
         },
         {'name': 'Build system',
          'clclass': 'build_sys',
@@ -190,7 +202,6 @@ def search(request, mode=results_mode.LATEST, **kwargs):
 
     if request.GET.has_key("filter") and request.GET.has_key("type"):
         items = apply_filter(context, items, request.GET['type'], request.GET['filter'])
-
     if mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
         #Special submitter mode see settings.py to enable
         name = settings.SPECIAL_SUBMITTER['name']
@@ -249,7 +260,7 @@ def details(request, fail_id):
     except ObjectDoesNotExist:
       build_failure = None
 
-    context = {'detail' : build_failure }
+    context = {'detail' : build_failure, 'error_types' : ErrorType }
 
     return render(request, "error-details.html", context)
 

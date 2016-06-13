@@ -107,6 +107,8 @@
                    <a href="#" class="sort-col sorted" data-order-by="-{{col.field}}" >{{col.name}}</a>
                    <span class="sorting-arrows" style="visibility: visible">&#9660</span>
 
+                  {% elif col.clclass == "failure" %}
+                  {{col.name}}
                   {% else %}
                   <a href="#" class="sort-col" data-order-by="{{col.field}}" >{{col.name}}</a>
 
@@ -127,18 +129,29 @@
               {% url "details" build_fail.id as details_url %}
               <tr class="data">
                 <td class="submitted_on"> <a href="{{details_url}}">{{ build_fail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
-                <td class="recipe"><a href="{{details_url}}">{{ build_fail.RECIPE }}</a>
-                  <a class="filter" href="#" data-filter="{{build_fail.RECIPE}}" data-type="recipe">
-                    <i class="icon-filter hover" title="Filter by {{build_fail.RECIPE}}"></i>
+
+                <td class="error_type"><a href="{{details_url}}">{{ build_fail.BUILD.get_ERROR_TYPE_display }}</a>
+                  <a class="filter" href="#" data-filter="{{build_fail.BUILD.get_ERROR_TYPE_display}}" data-type="error_type">
+                    <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.get_ERROR_TYPE_display}}"></i>
                   </a>
                 </td>
-                <td class="recipe_version"><a href="{{details_url}}" {% if build_fail.RECIPE_VERSION|length > 13 %}class="tooltip-me" data-toggle="tooltip" title="{{ build_fail.RECIPE_VERSION }}"{%endif%}>{{ build_fail.RECIPE_VERSION|truncatechars:13 }}</a></td>
-                <td class="task"><a href="{{details_url}}">{{ build_fail.TASK }}</a>
-                  <a class="filter"  href="#" data-filter="{{build_fail.TASK}}" data-type="task">
+
+                <td class="failure">
+                  {% if build_fail.BUILD.ERROR_TYPE == error_types.RECIPE %}
+                  <a href="{{details_url}}">
+                        {{ build_fail.RECIPE }}:
+                        {{ build_fail.TASK }}</a>
+                  <a class="filter" href="#" data-filter=" {{ build_fail.RECIPE }}: {{build_fail.TASK}}" data-type="failure">
+                    <i class="icon-filter hover" title="Filter by {{ build_fail.RECIPE }}: {{build_fail.TASK}}"></i>
+                  </a>
+                  {% else %}
+                  <a href="{{details_url}}">{{ build_fail.TASK }}</a>
+                  <a class="filter" href="#" data-filter="{{build_fail.TASK}}" data-type="failure">
                     <i class="icon-filter hover" title="Filter by {{build_fail.TASK}}"></i>
                   </a>
-
+                  {% endif %}
                 </td>
+
                 <td class="machine"><a href="{{details_url}}">{{ build_fail.BUILD.MACHINE }}</a>
                   <a class="filter"  href="#" data-filter="{{build_fail.BUILD.MACHINE}}" data-type="machine">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.MACHINE}}"></i>
