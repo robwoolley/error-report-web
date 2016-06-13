@@ -8,7 +8,7 @@
 # Licensed under the MIT license, see COPYING.MIT for details
 
 import json, re
-from Post.models import Build, BuildFailure
+from Post.models import Build, BuildFailure, ErrorType
 from django.conf import settings
 from django.utils import timezone
 from django.core.urlresolvers import reverse
@@ -52,6 +52,7 @@ class Parser:
             b.NAME = str(jsondata['username'])
             b.EMAIL = str(jsondata['email'])
             b.LINK_BACK = jsondata.get("link_back", None)
+            b.ERROR_TYPE = jsondata.get("error_type", ErrorType.RECIPE)
 
             # Extract the branch and commit
             g = re.match(r'(.*): (.*)', jsondata['branch_commit'])
@@ -67,8 +68,8 @@ class Parser:
 
             b.save()
             failures = jsondata['failures']
-        except:
-            return { 'error' : "Problem reading json payload" }
+        except Exception as e:
+            return { 'error' : "Problem reading json payload, %s" % e.message }
 
         for fail in failures:
             if len(fail) > int(settings.MAX_UPLOAD_SIZE):
