@@ -2,6 +2,8 @@
 # Based on settings.py from the Django project template
 # Copyright (c) Django Software Foundation and individual contributors.
 
+import os
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -13,12 +15,18 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        # exmplae backends: 'postgresql_psycopg2', 'mysql', 'sqlite3'
+        # or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Or path to database file if using sqlite3.
+        'NAME': 'error-report-db.sqlite3',
+        # Not used with sqlite3.
+        'USER': '',
+        'PASSWORD': '',
+        # Set to empty string for localhost.
+        'HOST': '',
+        # Set to empty string for default.
+        'PORT': '',
     }
 }
 
@@ -26,11 +34,12 @@ DATABASES = {
 # Uncomment to add a tab in the UI which is similar to the latest errors page
 # but all queries on it are additionally filtered by the submitter being the
 # string defined below.
-#SPECIAL_SUBMITTER = {
-#    'name' : "yocto-autobuilder", # Submitter name to filter on
-#    'title' : "Autobuilder", # Title that is displayed
-#    'link' : "Autobuilder", # Must be valid for a url
-#}
+#
+# SPECIAL_SUBMITTER = {
+#     'name' : "yocto-autobuilder", # Submitter name to filter on
+#     'title' : "Autobuilder", # Title that is displayed
+#     'link' : "Autobuilder", # Must be valid for a url
+# }
 
 # Maximum upload size for the payload send by send-error-rpoert
 MAX_UPLOAD_SIZE = "5242880"
@@ -65,7 +74,6 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 
-import os
 CURRENT_PATH = os.getcwd()
 TEMPLATES_PATH = CURRENT_PATH + "/templates"
 
@@ -99,17 +107,17 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ''
+SECRET_KEY = 'changeme'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -128,7 +136,8 @@ ROOT_URLCONF = 'project.urls'
 WSGI_APPLICATION = 'project.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates" or
+    # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     TEMPLATES_PATH,
@@ -146,7 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-#    'registration',
+    # 'registration',
     )
 
 # A sample logging configuration. The only tangible logging
