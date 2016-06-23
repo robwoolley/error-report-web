@@ -131,7 +131,7 @@
                 <td class="submitted_on"> <a href="{{details_url}}">{{ build_fail.BUILD.DATE|date:"d/m/y H:i"}}</a></td>
 
                 <td class="error_type"><a href="{{details_url}}">{{ build_fail.BUILD.get_ERROR_TYPE_display }}</a>
-                  <a class="filter" href="#" data-filter="{{build_fail.BUILD.get_ERROR_TYPE_display}}" data-type="error_type">
+                  <a class="filter" href="#" data-filter="{{build_fail.BUILD.ERROR_TYPE}}" data-type="error_type">
                     <i class="icon-filter hover" title="Filter by {{build_fail.BUILD.get_ERROR_TYPE_display}}"></i>
                   </a>
                 </td>
