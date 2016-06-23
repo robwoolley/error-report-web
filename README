@@ -24,7 +24,7 @@ Setup instructions:
 2. Install the dependencies via `pip install -r requirements.txt`
 3. Set DATABASES.default.ENGINE in settings.py to use the database engine of your choice.
 4. Set a SECRET_KEY in settings.py
-5. Setup the database schema with the Django model. Run `python manage.py syncdb`.
+5. Setup the database schema with the Django model. Run `python manage.py migrate`.
 
 
 Usage
