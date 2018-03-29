@@ -273,7 +273,7 @@ def details(request, fail_id):
             build_failure.REFERER = 'NO_REFERER'
         build_failure.save()
 
-    context = {'detail' : build_failure, 'error_types' : ErrorType }
+    context = {'detail' : build_failure, 'error_types' : ErrorType, 'bugzilla_url' : settings.BUGZILLA_URL }
 
     return render(request, "error-details.html", context)
 

@@ -197,6 +197,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTH_PROFILE_MODULE = 'registration.RegistrationProfile'
 
+BUGZILLA_URL = 'https://bugzilla.yoctoproject.org'
+
 ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'noreply@example.com'
