@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-#
+# SPDX-License-Identifier: MIT
+
 # test/example script for sending data to error-report-web
 
 import urllib2

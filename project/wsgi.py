@@ -1,3 +1,7 @@
+#
+# SPDX-License-Identifier: MIT
+#
+
 """
 WSGI config for errorsreport project.
 

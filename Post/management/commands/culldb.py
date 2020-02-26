@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+#
 # error-reporting-tool -  culldb
 #
 # Copyright (C) 2015 Intel Corporation

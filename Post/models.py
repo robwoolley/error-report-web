@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+#
 # error-reporting-tool - model definitions
 #
 # Copyright (C) 2013 Intel Corporation
