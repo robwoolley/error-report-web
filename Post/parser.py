@@ -21,9 +21,13 @@ class Parser:
 
     # returns true if the values contain '<' char
     # Ignore the failures field (which is an array anyway)
+    # Ignore any non-str fields too [YOCTO #14208]
     def contains_tags (self, data):
         for key,val in data.items():
             if key == 'failures':
+                continue
+            
+            if not isinstance(val, str):
                 continue
 
             if '<' in val:
