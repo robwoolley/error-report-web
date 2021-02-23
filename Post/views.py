@@ -15,9 +15,9 @@ from django.shortcuts import HttpResponse, render
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from Post.models import BuildFailure, Build, ErrorType
-from parser import Parser
+from Post.parser import Parser
 from django.conf import settings
-from createStatistics import Statistics
+from Post.createStatistics import Statistics
 from django.core.paginator import Paginator, EmptyPage
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 from django.http import JsonResponse
@@ -65,12 +65,12 @@ def addData(request, return_json=False):
         if return_json:
             response = JsonResponse(result)
         else:
-            if not result.has_key('error'):
+            if not 'error' in result:
               response = HttpResponse("Your entry can be found here: "+result['build_url'])
             else:
               response = HttpResponse(result['error'])
 
-        if result.has_key('error'):
+        if 'error' in result:
             response.status_code=500
     else:
         if return_json:
@@ -125,7 +125,7 @@ def search(request, mode=results_mode.LATEST, **kwargs):
 
     items = BuildFailure.objects.all()
 
-    if request.GET.has_key("limit"):
+    if "limit" in request.GET:
         try:
             n_limit = int(request.GET['limit'])
             if n_limit > 0:
@@ -202,14 +202,14 @@ def search(request, mode=results_mode.LATEST, **kwargs):
       ],
     }
 
-    if request.GET.has_key("filter") and request.GET.has_key("type"):
+    if "filter" in request.GET and "type" in request.GET:
         items = apply_filter(context, items, request.GET['type'], request.GET['filter'])
     if mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
         #Special submitter mode see settings.py to enable
         name = settings.SPECIAL_SUBMITTER['name']
         items = items.filter(BUILD__NAME__istartswith=name)
 
-    elif mode == results_mode.SEARCH and request.GET.has_key("query"):
+    elif mode == results_mode.SEARCH and "query" in request.GET:
         query = request.GET["query"]
 
         items = items.filter(

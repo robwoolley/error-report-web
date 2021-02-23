@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 class Parser:
 
     def __init__(self, data):
-        self.data = data
+        self.data = data.decode('utf-8')
 
     # returns true if the values contain '<' char
     # Ignore the failures field (which is an array anyway)
