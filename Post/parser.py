@@ -9,6 +9,7 @@
 # Licensed under the MIT license, see COPYING.MIT for details
 
 import json, re
+import bleach
 from Post.models import Build, BuildFailure, ErrorType
 from django.conf import settings
 from django.utils import timezone
@@ -19,21 +20,6 @@ class Parser:
     def __init__(self, data):
         self.data = data.decode('utf-8')
 
-    # returns true if the values contain '<' char
-    # Ignore the failures field (which is an array anyway)
-    # Ignore any non-str fields too [YOCTO #14208]
-    def contains_tags (self, data):
-        for key,val in data.items():
-            if key == 'failures':
-                continue
-            
-            if not isinstance(val, str):
-                continue
-
-            if '<' in val:
-                return True
-        return False
-
     def parse(self, request):
         build_fails_logged = []
 
@@ -42,8 +28,14 @@ class Parser:
         except:
              return  { 'error' : 'Invalid json' }
 
-        if self.contains_tags(jsondata) == True:
-            return  { 'error' : 'Invalid characters in json' }
+        # Bleach data going directly into the database so that
+        # displaying in any of the graphing doesn't introduce XSS
+        for key,val in jsondata.items():
+            if key == 'failures':
+                continue
+            if not isinstance(val, str):
+                continue
+            jsondata[key] = bleach.clean(val)
 
         b = Build.objects.create()
         try:
