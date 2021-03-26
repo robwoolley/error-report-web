@@ -61,6 +61,16 @@ class BuildFailure(models.Model):
     ERROR_DETAILS = models.TextField(max_length=int(settings.MAX_UPLOAD_SIZE))
     BUILD = models.ForeignKey(Build)
     LEV_DISTANCE = models.IntegerField(blank=True, null=True)
+    REFERER_CHOICES = (
+            ('NO_REFERER', 'no_referer'),
+            ('OTHER', 'other'),
+            ('NOT_VISITED', 'not_visited')
+    )
+    REFERER = models.CharField(
+            max_length = 14,
+            choices = REFERER_CHOICES,
+            default = 'NOT_VISITED'
+    )
 
     def get_similar_fails(self):
         if self.LEV_DISTANCE is None:
