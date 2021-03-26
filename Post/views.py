@@ -256,23 +256,23 @@ def search(request, mode=results_mode.LATEST, **kwargs):
         items = items.order_by()
         return render(request, "latest-errors.html", context)
 
-
 def details(request, fail_id):
     try:
         build_failure = BuildFailure.objects.get(id=fail_id)
     except ObjectDoesNotExist:
         build_failure = None
-    try:
-        referer = urlparse(request.META['HTTP_REFERER'])
-        referer_hostname = referer.hostname
-        if referer.port:
-            referer_hostname += ":" + str(referer.port)
-        if referer_hostname != request.get_host():
-            build_failure.REFERER = 'OTHER'
-    except KeyError:
-        # There is no referer
-        build_failure.REFERER = 'NO_REFERER'
-    build_failure.save()
+    if build_failure:
+        try:
+            referer = urlparse(request.META['HTTP_REFERER'])
+            referer_hostname = referer.hostname
+            if referer.port:
+                referer_hostname += ":" + str(referer.port)
+            if referer_hostname != request.get_host():
+                build_failure.REFERER = 'OTHER'
+        except KeyError:
+            # There is no referer
+            build_failure.REFERER = 'NO_REFERER'
+        build_failure.save()
 
     context = {'detail' : build_failure, 'error_types' : ErrorType }
 
