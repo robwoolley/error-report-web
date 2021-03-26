@@ -24,7 +24,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 import json
 import urllib
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 class results_mode(object):
     LATEST = 0
