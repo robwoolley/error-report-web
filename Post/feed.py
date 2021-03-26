@@ -27,7 +27,7 @@ class LatestEntriesFeed(Feed):
         if self.mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
             #Special submitter mode see settings.py to enable
             name = settings.SPECIAL_SUBMITTER['name']
-            queryset = BuildFailure.objects.order_by('-BUILD__DATE').filter(BUILD__NAME__istartswith=name)[:self.limit]
+            queryset = BuildFailure.objects.order_by('-BUILD__DATE').filter(BUILD__NAME__icontains=name)[:self.limit]
 
         else:
             queryset = BuildFailure.objects.order_by('-BUILD__DATE')[:self.limit]

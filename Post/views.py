@@ -45,7 +45,6 @@ def common_context(request):
 
     return ret
 
-
 @csrf_exempt
 def addData(request, return_json=False):
     response = ''
@@ -208,7 +207,7 @@ def search(request, mode=results_mode.LATEST, **kwargs):
     if mode == results_mode.SPECIAL_SUBMITTER and hasattr(settings,"SPECIAL_SUBMITTER"):
         #Special submitter mode see settings.py to enable
         name = settings.SPECIAL_SUBMITTER['name']
-        items = items.filter(BUILD__NAME__istartswith=name)
+        items = items.filter(BUILD__NAME__icontains=name)
 
     elif mode == results_mode.SEARCH and "query" in request.GET:
         query = request.GET["query"]

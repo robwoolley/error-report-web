@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    #url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     #url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^(?i)Errors/Latest/$', 'Post.views.search', { 'mode' : results_mode.LATEST }, name= "latest_errors"),
     url(r'^(?i)Errors/Latest/feed$', LatestEntriesFeed(), name="errors_feed"),

@@ -15,11 +15,12 @@ def setup_django():
 def main():
     setup_django()
     from Post.models import BuildFailure
-    delete_before = timezone.now()-timedelta(days=30)
+    delete_before = timezone.now()-timedelta(days=45)
     query = "SELECT bf.id FROM Post_buildfailure bf LEFT JOIN Post_build b ON (bf.BUILD_id = b.id) WHERE bf.REFERER NOT IN ('OTHER','NO_REFERER') AND b.DATE < '{0}'".format(delete_before.date())
-    print query
+    #print query
     items = BuildFailure.objects.raw(query)
     for item in items:
+        print "Deleting: ", item.id
         item.delete()
 
 if __name__ == "__main__":
