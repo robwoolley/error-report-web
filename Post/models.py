@@ -15,6 +15,7 @@ import Levenshtein
 
 class ErrorType(object):
     RECIPE = 'recipe'
+    CHECK_LAYER = 'check-layer'
     CORE = 'core'
     BITBAKE_SELFTEST = 'bitbake-selftest'
     OE_SELFTEST = 'oe-selftest'
@@ -26,6 +27,7 @@ class InvalidErrorType(Exception):
 class Build(models.Model):
     ERROR_TYPE_CHOICES = (
             (ErrorType.RECIPE, 'Recipe'),
+            (ErrorType.CHECK_LAYER, 'check-layer'),
             (ErrorType.CORE, 'Core'),
             (ErrorType.BITBAKE_SELFTEST, 'Bitbake selftest'),
             (ErrorType.OE_SELFTEST, 'OE selftest'),
