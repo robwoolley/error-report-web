@@ -7,7 +7,7 @@
 # Licensed under the MIT license, see COPYING.MIT for details
 
 from django.contrib.syndication.views import Feed
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from Post.models import BuildFailure
 from Post.views import results_mode
 from django.conf import settings

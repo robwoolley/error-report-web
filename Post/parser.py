@@ -13,7 +13,7 @@ import bleach
 from Post.models import Build, BuildFailure, ErrorType
 from django.conf import settings
 from django.utils import timezone
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 class Parser:
 
