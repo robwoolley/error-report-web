@@ -7,6 +7,7 @@
 # Licensed under the MIT license, see COPYING.MIT for details
 
 from django.conf.urls import include, re_path
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
@@ -45,4 +46,4 @@ urlpatterns = [
     re_path(r'^$', RedirectView.as_view(pattern_name="main", permanent=True)),
     # Url for backwards compatibility with old search links
     re_path(r'^Errors/Search/Args/$', RedirectView.as_view(pattern_name="views.search",query_string=True,permanent=True), {'mode':results_mode.SEARCH }),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
