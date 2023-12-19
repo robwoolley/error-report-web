@@ -61,7 +61,7 @@ class BuildFailure(models.Model):
     RECIPE= models.CharField(max_length=250)
     RECIPE_VERSION = models.CharField(max_length=200)
     ERROR_DETAILS = models.TextField(max_length=int(settings.MAX_UPLOAD_SIZE))
-    BUILD = models.ForeignKey(Build)
+    BUILD = models.ForeignKey(Build,on_delete=models.CASCADE)
     LEV_DISTANCE = models.IntegerField(blank=True, null=True)
     REFERER_CHOICES = (
             ('NO_REFERER', 'no_referer'),

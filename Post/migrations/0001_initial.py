@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('RECIPE', models.CharField(max_length=250)),
                 ('RECIPE_VERSION', models.CharField(max_length=200)),
                 ('ERROR_DETAILS', models.TextField(max_length=5242880)),
-                ('BUILD', models.ForeignKey(to='Post.Build')),
+                ('BUILD', models.ForeignKey(to='Post.Build',on_delete=models.CASCADE)),
             ],
             options={
             },
